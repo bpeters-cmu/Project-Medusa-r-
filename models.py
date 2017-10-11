@@ -12,14 +12,10 @@ class User(db.Model):
     password = db.Column(db.String(128))
 
 
-    def __init__(self, username, password, tenancy_ocid, user_ocid, fingerprint, private_key, region):
+    def __init__(self, username, password):
         self.username = username
         self.password = self.hash_password(password)
-        self.tenancy_ocid = tenancy_ocid
-        self.user_ocid = user_ocid
-        self.fingerprint = fingerprint
-        self.region = region
-        self.private_key_path = self.create_key_file(private_key)
+
 
     def hash_password(self, pword):
         hashed = phash.hash(pword)
@@ -40,7 +36,7 @@ class User(db.Model):
             print('exception occurred, rolling back db')
             print(str(e))
             db.session.rollback()
-            return False    
+            return False
 
     def __str__(self):
         return self.username + ' ' + self.password

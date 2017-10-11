@@ -39,4 +39,10 @@ def create_applications(name, bp_id, quantity):
         config.ravello_password), headers=headers)
         print(r.status_code)
         print(r.json())
-    
+
+def get_ip(app_id, vm_id):
+    headers = {'Accept': 'application/json'}
+    url = 'https://cloud.ravellosystems.com/api/v1/applications/'+ app_id +'/vms/'+ vm_id +'/publicIps;deployment'
+    r = requests.get(url, auth=(config.ravello_username, config.ravello_password), headers=headers)
+    print(r.status_code)
+    print(r.json())
