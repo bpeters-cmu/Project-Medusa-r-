@@ -12,7 +12,7 @@ class Register(Resource):
     def post(self):
         data = request.get_json(force=True)
         try:
-            new_user = models.User(data['username'], data['password'], data['tenancy_ocid'],
+            new_user = models.Admin(data['username'], data['password'], data['tenancy_ocid'],
             data['user_ocid'], data['fingerprint'], data['private_key'], data['region'])
             if new_user.insert():
                 return 'OK',200
@@ -50,7 +50,7 @@ class Instance(Resource):
     def verify_password(username, password):
         print('user:' + username + 'end')
         print('password: ' + password)
-        user = models.User.query.filter_by(username = username).first()
+        user = models.Admin.query.filter_by(username = username).first()
         print(user)
         if not user or not user.verify_password(password):
             return False
@@ -74,7 +74,7 @@ class Connection(Resource):
     def verify_password(username, password):
         print('user:' + username + 'end')
         print('password: ' + password)
-        user = models.ClientUser.query.filter_by(username = username).first()
+        user = models.User.query.filter_by(username = username).first()
         print(user)
         if not user or not user.verify_password(password):
             return False
@@ -88,7 +88,7 @@ class Client(Resource):
     def post(self):
         data = request.get_json(force=True)
         try:
-            new_user = models.ClientUser(data['username'], data['password'], data['hostname'],
+            new_user = models.User(data['username'], data['password'], data['hostname'],
             g.user.id)
             if new_user.insert():
                 return 'OK',200
@@ -102,7 +102,7 @@ class Client(Resource):
     def verify_password(username, password):
         print('user:' + username + 'end')
         print('password: ' + password)
-        user = models.User.query.filter_by(username = username).first()
+        user = models.Admin.query.filter_by(username = username).first()
         print(user)
         if not user or not user.verify_password(password):
             return False

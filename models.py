@@ -1,21 +1,24 @@
 from passlib.hash import pbkdf2_sha256 as phash
 from app import db
-from Crypto.Cipher import AES
+from simplecrypt import encrypt, decrypt
 import os
 import json
 import base64
+import config
 
 class Admin(db.Model):
     __tablename__ = 'Admin'
     id = db.Column('user_id',db.Integer , primary_key=True)
     username = db.Column(db.String(25), unique=True , index=True)
     password = db.Column(db.String(128))
+    ravello_username = db.Column(db.String(35))
+    ravello_password = db.Column(db.String(50))
 
-
-    def __init__(self, username, password):
+    def __init__(self, username, password, ravello_username, ravello_password):
         self.username = username
         self.password = self.hash_password(password)
-
+        self.ravello_username = ravello_username
+        self.ravello_password = encrypt(config.key), ravello_password)
 
     def hash_password(self, pword):
         hashed = phash.hash(pword)
