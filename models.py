@@ -5,8 +5,8 @@ import os
 import json
 import base64
 
-class User(db.Model):
-    __tablename__ = 'User'
+class Admin(db.Model):
+    __tablename__ = 'Admin'
     id = db.Column('user_id',db.Integer , primary_key=True)
     username = db.Column(db.String(25), unique=True , index=True)
     password = db.Column(db.String(128))
@@ -42,20 +42,19 @@ class User(db.Model):
         return self.username + ' ' + self.password
 
     def create_client(self, client_username, client_password, hostname):
-        client = ClientUser(client_username, client_password, hostname, self.id)
+        client = User(client_username, client_password, hostname, self.id)
         client.insert()
 
 
-class ClientUser(db.Model):
-    __tablename__ = 'ClientUser'
+class User(db.Model):
+    __tablename__ = 'User'
     id = db.Column('user_id',db.Integer , primary_key=True)
     username = db.Column(db.String(25), unique=True , index=True)
     password = db.Column(db.String(128))
-    hostname = db.Column(db.String(25))
     conn_type = db.Column(db.String(3))
-    admin_id = db.Column(db.Integer, db.ForeignKey('User.user_id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
 
-    def __init__(self, username, password, hostname, admin_id):
+    def __init__(self, username, password, admin_id):
         self.username = username
         self.password = self.hash_password(password)
         self.hostname = hostname
