@@ -9,6 +9,7 @@ auth = HTTPBasicAuth()
 class Login(Resource):
     @auth.login_required
     def get(self):
+        return 200
 
     @auth.verify_password
     def verify_password(username, password):
@@ -23,7 +24,6 @@ class Login(Resource):
             return True
 
         return False
-
 
 
 class Register(Resource):
