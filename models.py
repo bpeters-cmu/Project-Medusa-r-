@@ -1,6 +1,7 @@
 from passlib.hash import pbkdf2_sha256 as phash
 from app import db
 from simplecrypt import encrypt, decrypt
+from ravello import Ravello
 import os
 import json
 import base64
@@ -44,9 +45,15 @@ class Admin(db.Model):
     def __str__(self):
         return self.username + ' ' + self.password
 
-    def create_client(self, client_username, client_password, hostname):
-        client = User(client_username, client_password, hostname, self.id)
-        client.insert()
+    def create_user(self, client_username, client_password, hostname):
+        user = User(client_username, client_password, hostname, self.id)
+        user.insert()
+
+    def create_client(self, quantity):
+        password = decrypt(config.key, self.ravello_password)
+        ravello = Ravello(self.ravello_username, password)
+        return ravello.create_applications(quantity)
+
 
 
 class User(db.Model):
@@ -54,13 +61,14 @@ class User(db.Model):
     id = db.Column('user_id',db.Integer , primary_key=True)
     username = db.Column(db.String(25), unique=True , index=True)
     password = db.Column(db.String(128))
-    conn_type = db.Column(db.String(3))
+    email = db.Column(db.String(128))
     admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
 
-    def __init__(self, username, password, admin_id):
+    def __init__(self, username, password, email, admin_id):
         self.username = username
         self.password = self.hash_password(password)
         self.hostname = hostname
+        self.email = email
         self.admin_id = admin_id
 
     def hash_password(self, pword):
@@ -95,7 +103,26 @@ class User(db.Model):
         return base64.urlsafe_b64encode(token)
 
 
+class Client(db.Model):
+    __tablename__ = 'Client'
+    id = db.Column('client_id',db.Integer , primary_key=True)
+    conn_type = db.Column(db.String(3))
+    admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
+    application_id = db.Column(db.Integer)
 
+    def __init__(self, conn_type, admin_id, application_id):
+        self.conn_type = conn_type
+        self.admin_id = admin_id
+        self.application_id = application_id
 
-
-#tenancy_ocid, user_ocid, fingerprint, private_key_path, region
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return True
+        except BaseException as e:
+            print('exception occurred, rolling back db')
+            print(str(e))
+            db.session.rollback()
+            return False

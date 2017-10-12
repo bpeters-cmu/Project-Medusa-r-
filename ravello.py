@@ -34,18 +34,21 @@ class Ravello:
             self.password), headers=headers)
         return r.json()
 
-    def create_applications(bp_id, quantity):
+    def create_applications(quantity):
+        bp_id = get_gold_image
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         print(headers)
-
+        id_list = []
         for i in range(quantity):
             milli_sec = int(round(time.time() * 1000))
             payload = {'name': 'VDI_' + str(milli_sec) ,'baseBlueprintId': bp_id, 'description': 'VDI instance'}
-            print(payload)
             r = requests.post('https://cloud.ravellosystems.com/api/v1/applications/',auth=(self.username,
             self.password), headers=headers, data=json.dumps(payload))
             print(r.status_code)
-            print(r.text)
+            body = r.json()
+            id_list.append(body['id'])
+        publish_all(id_list)
+        return id_list
 
     def get_ip(app_id, vm_id):
         headers = {'Accept': 'application/json'}

@@ -22,7 +22,7 @@ class Register(Resource):
             return str(e), 400
 
 
-class Instance(Resource):
+class VdiClient(Resource):
 
     @auth.login_required
     def get(self):
@@ -36,9 +36,9 @@ class Instance(Resource):
 
     @auth.login_required
     def post(self):
-        print('post')
+        data = request.get_json(force=True)
         try:
-            return app_service.terraform_create(), 200
+            return g.user.create_client(data['quantity']), 200
 
         except BaseException as e:
             print('Exception: ', str(e))
@@ -82,14 +82,23 @@ class Connection(Resource):
         g.user = user
         return True
 
-class Client(Resource):
+class User(Resource):
+
+    @auth.login_required
+    def get(self):
+        try:
+            users = models.User.query.filter_by(admin_id=g.user.id)
+
+
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return str(e), 400
 
     @auth.login_required
     def post(self):
         data = request.get_json(force=True)
         try:
-            new_user = models.User(data['username'], data['password'], data['hostname'],
-            g.user.id)
+            new_user = models.User(data['username'], data['password'], data['email'], g.user.id)
             if new_user.insert():
                 return 'OK',200
             return 'User Create Failed', 400
