@@ -31,7 +31,6 @@ class Admin(db.Model):
         return hashed
 
     def verify_password(self, pword):
-        print('verifying password: ' + pword)
         print(phash.verify(pword, self.password))
         return phash.verify(pword, self.password)
 
@@ -82,7 +81,6 @@ class User(db.Model):
         return hashed
 
     def verify_password(self, pword):
-        print('verifying password: ' + pword)
         print(phash.verify(pword, self.password))
         return phash.verify(pword, self.password)
 
