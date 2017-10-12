@@ -9,7 +9,7 @@ auth = HTTPBasicAuth()
 class Login(Resource):
     @auth.login_required
     def get(self):
-        if g.user.__tablename__ == 'Admin'
+        if g.usertype == 'Admin'
             return 'Admin'
         return 'User'
 
@@ -19,10 +19,10 @@ class Login(Resource):
         user = models.User.query.filter_by(username = username).first()
         print(user)
         if admin and admin.verify_password(password):
-            g.user = user
+            g.usertype = 'Admin'
             return True
         if user and user.verify_password(password):
-            g.user = user
+            g.usertype = 'User'
             return True
 
         return False
