@@ -102,6 +102,9 @@ class User(db.Model):
 
         return base64.urlsafe_b64encode(token)
 
+    def serialize(self):
+        return {'username':self.username, 'email': self.email}
+
 
 class Client(db.Model):
     __tablename__ = 'Client'
@@ -110,11 +113,17 @@ class Client(db.Model):
     admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
     application_id = db.Column(db.Integer)
+    name = db.Column(db.String(128))
 
-    def __init__(self, conn_type, admin_id, application_id):
-        self.conn_type = conn_type
+    def __init__(self, admin_id, application_id, name):
+        self.conn_type = 'rdp'
         self.admin_id = admin_id
         self.application_id = application_id
+        self.name = name
+
+    def assign_user(self, user_id):
+        self.user_id = user_id
+        db.session.commit()
 
     def insert(self):
         try:
@@ -126,3 +135,6 @@ class Client(db.Model):
             print(str(e))
             db.session.rollback()
             return False
+
+    def serialize(self):
+        return{}
