@@ -19,7 +19,7 @@ class Admin(db.Model):
         self.username = username
         self.password = self.hash_password(password)
         self.ravello_username = ravello_username
-        self.ravello_password = encrypt(config.key), ravello_password)
+        self.ravello_password = encrypt(config.key, ravello_password)
 
     def hash_password(self, pword):
         hashed = phash.hash(pword)
