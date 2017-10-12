@@ -71,7 +71,6 @@ class User(db.Model):
     def __init__(self, username, password, email, admin_id):
         self.username = username
         self.password = self.hash_password(password)
-        self.hostname = hostname
         self.email = email
         self.admin_id = admin_id
 
