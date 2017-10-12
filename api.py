@@ -9,9 +9,7 @@ auth = HTTPBasicAuth()
 class Login(Resource):
     @auth.login_required
     def get(self):
-        if g.usertype == 'Admin'
-            return 'Admin'
-        return 'User'
+        return g.usertype
 
     @auth.verify_password
     def verify_password(username, password):
