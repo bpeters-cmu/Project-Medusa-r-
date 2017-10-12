@@ -2,7 +2,6 @@ from flask import request, g
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 import traceback
-import app_service
 import models
 
 auth = HTTPBasicAuth()
