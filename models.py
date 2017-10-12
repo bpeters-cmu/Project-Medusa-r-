@@ -7,6 +7,8 @@ import json
 import base64
 import config
 
+
+
 class Admin(db.Model):
     __tablename__ = 'Admin'
     id = db.Column('user_id',db.Integer , primary_key=True)
