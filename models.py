@@ -14,6 +14,8 @@ class Admin(db.Model):
     password = db.Column(db.String(128))
     ravello_username = db.Column(db.String(35))
     ravello_password = db.Column(db.String(50))
+    users = db.relationship('User', backref=db.backref('admin', lazy=True))
+    clients = db.relationship('Client', backref=db.backref('admin', lazy=True))
 
     def __init__(self, username, password, ravello_username, ravello_password):
         self.username = username
@@ -63,6 +65,7 @@ class User(db.Model):
     password = db.Column(db.String(128))
     email = db.Column(db.String(128))
     admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
+    clients = db.relationship('Client', backref=db.backref('user', lazy=True))
 
     def __init__(self, username, password, email, admin_id):
         self.username = username
@@ -137,4 +140,5 @@ class Client(db.Model):
             return False
 
     def serialize(self):
-        return{}
+        username = self.user.username
+        return{'name':self.name, 'application_id':self.application_id, 'assigned_user': username }
