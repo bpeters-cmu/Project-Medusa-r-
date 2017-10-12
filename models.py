@@ -15,7 +15,7 @@ class Admin(db.Model):
     username = db.Column(db.String(25), unique=True , index=True)
     password = db.Column(db.String(128))
     ravello_username = db.Column(db.String(35))
-    ravello_password = db.Column(db.String(50))
+    ravello_password = db.Column(db.Blob())
     users = db.relationship('User', backref=db.backref('admin', lazy=True))
     clients = db.relationship('Client', backref=db.backref('admin', lazy=True))
 
