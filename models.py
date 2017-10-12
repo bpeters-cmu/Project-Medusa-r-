@@ -105,7 +105,8 @@ class User(db.Model):
         return base64.urlsafe_b64encode(token)
 
     def serialize(self):
-        return {'username':self.username, 'email': self.email}
+        clients = [c.serialize() for c in self.clients]
+        return {'username':self.username, 'email': self.email, 'clients':clients}
 
 
 class Client(db.Model):

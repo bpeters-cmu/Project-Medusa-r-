@@ -45,7 +45,9 @@ class VdiClient(Resource):
     def get(self):
         print('enter get')
         try:
-            return app_service.get_instances(g.user),200
+            clients = models.Client.query.filter_by(admin_id=g.user.id)
+            data = [c.serialize() for c in clients]
+            return data,200
 
         except BaseException as e:
             print('Exception: ', str(e))
