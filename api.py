@@ -11,8 +11,8 @@ class Register(Resource):
     def post(self):
         data = request.get_json(force=True)
         try:
-            new_user = models.Admin(data['username'], data['password'], data['tenancy_ocid'],
-            data['user_ocid'], data['fingerprint'], data['private_key'], data['region'])
+            new_user = models.Admin(data['username'], data['password'], data['ravello_username'],
+            data['ravello_password'])
             if new_user.insert():
                 return 'OK',200
             return 'User Create Failed', 400
@@ -87,7 +87,6 @@ class User(Resource):
     def get(self):
         try:
             users = models.User.query.filter_by(admin_id=g.user.id)
-
 
         except BaseException as e:
             print('Exception: ', str(e))

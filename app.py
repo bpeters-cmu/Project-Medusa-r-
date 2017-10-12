@@ -18,4 +18,4 @@ api.add_resource(Connection, '/token')
 api.add_resource(User, '/user')
 
 if __name__ == '__main__':
-    application.run(host='0.0.0.0', port='8000', debug=False)
+    application.run(host='0.0.0.0', port='8000', debug=True)
