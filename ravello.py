@@ -79,3 +79,17 @@ class Ravello:
     def publish_all(self, apps):
         for app in apps:
             self.publish_app(app)
+
+    def stop_app(self, app_id):
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + id + '/stop'
+        r = requests.post(url, auth=(self.username, self.password), headers=headers)
+        body = r.json()
+        return body['completedSuccessfuly']
+
+    def start_app(self, app_id):
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + id + '/start'
+        r = requests.post(url, auth=(self.username, self.password), headers=headers)
+        body = r.json()
+        return body['completedSuccessfuly']
