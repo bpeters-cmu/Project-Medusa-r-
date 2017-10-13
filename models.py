@@ -77,15 +77,20 @@ class Admin(db.Model):
             return False
 
     def get_blueprint(self):
+        print('getting blueprint')
         ravello = Ravello(self.ravello_username, self.ravello_password)
         bp_id, description = ravello.get_gold_image()
+        print(bp_id, description)
         if not self.blueprint:
             bp = Blueprint(self.id, bp_id, description)
+            print(bp.serialize())
             bp.insert()
             return bp.serialize()
         if self.blueprint[0].bp_id == bp_id:
+            print('2')
             return self.blueprint[0].serialize()
         else:
+            print('3')
             db.session.delete(self.blureprint[0])
             db.session.commit()
             bp = Blueprint(self.id, bp_id, description)
