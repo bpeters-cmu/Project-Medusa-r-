@@ -35,10 +35,13 @@ class Ravello:
         return r.json()
 
     def create_applications(quantity):
-        bp_id = get_gold_image
+        bp_id = get_gold_image()
+        if not bp_id:
+            return None
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         print(headers)
-        id_list = []
+        apps = []
+        app_ids = []
         for i in range(quantity):
             milli_sec = int(round(time.time() * 1000))
             payload = {'name': 'VDI_' + str(milli_sec) ,'baseBlueprintId': bp_id, 'description': 'VDI instance'}
@@ -46,16 +49,18 @@ class Ravello:
             self.password), headers=headers, data=json.dumps(payload))
             print(r.status_code)
             body = r.json()
-            id_list.append(body['id'])
-        publish_all(id_list)
-        return id_list
+            app_ids.append(body['id'])
+            apps.append([body['id'], body['name'],body['design']['vms'][0]['id']])
+        publish_all(app_ids)
+        return apps
 
     def get_ip(app_id, vm_id):
         headers = {'Accept': 'application/json'}
         url = 'https://cloud.ravellosystems.com/api/v1/applications/'+ app_id +'/vms/'+ vm_id +'/publicIps;deployment'
         r = requests.get(url, auth=(self.username, self.password), headers=headers)
         print(r.status_code)
-        print(r.json())
+        body = r.json()
+        return body['ips'][0]
 
     def get_gold_image():
         blueprints = get_blueprints()

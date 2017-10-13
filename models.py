@@ -52,10 +52,29 @@ class Admin(db.Model):
         user = User(client_username, client_password, hostname, self.id)
         user.insert()
 
-    def create_client(self, quantity):
+    def create_clients(self, quantity):
         password = decrypt(config.key, self.ravello_password)
         ravello = Ravello(self.ravello_username, password)
-        return ravello.create_applications(quantity)
+        apps = ravello.create_applications(quantity)
+        if not apps:
+            return None
+        clients = []
+        for app in apps:
+            client = new Client(self.id, app[0], app[1], app[2])
+            clients.append(client)
+        return self.insert_clients(clients)
+
+    def insert_clients(self, clients):
+        try:
+            db.session.add(clients)
+            db.session.commit()
+            return True
+        except BaseException as e:
+            print('exception occurred, rolling back db')
+            print(str(e))
+            db.session.rollback()
+            return False
+
 
 
 
@@ -94,15 +113,6 @@ class User(db.Model):
             db.session.rollback()
             return False
 
-    def get_token(self):
-        json_data = {}
-        json_data['connection']['type'] = self.conn_type
-        json_data['connection']['settings']['hostname'] = self.hostname
-        json_data['connection']['settings']['username'] = self.username
-        json_data['connection']['settings']['password'] = self.password
-        token = json.dumps(json_data).encode('utf-8')
-
-        return base64.urlsafe_b64encode(token)
 
     def serialize(self):
         clients = [c.serialize() for c in self.clients]
@@ -116,13 +126,15 @@ class Client(db.Model):
     admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
     application_id = db.Column(db.Integer)
+    vm_id = db.Column(db.Integer)
     name = db.Column(db.String(128))
 
-    def __init__(self, admin_id, application_id, name):
+    def __init__(self, admin_id, application_id, name, vm_id):
         self.conn_type = 'rdp'
         self.admin_id = admin_id
         self.application_id = application_id
         self.name = name
+        self.vm_id = vm_id
 
     def assign_user(self, user_id):
         self.user_id = user_id
@@ -139,6 +151,17 @@ class Client(db.Model):
             db.session.rollback()
             return False
 
-    def serialize(self):
+    def get_token(self, ravello):
+        json_data = {}
+        json_data['connection']['type'] = self.conn_type
+        json_data['connection']['settings']['hostname'] =
+        json_data['connection']['settings']['username'] = ''
+        json_data['connection']['settings']['password'] = ''
+        token = json.dumps(json_data).encode('utf-8')
+
+        return base64.urlsafe_b64encode(token)
+
+    def serialize(self, ravello):
         username = self.user.username
-        return{'name':self.name, 'application_id':self.application_id, 'assigned_user': username }
+        ip = ravello.get_ip(self.application_id, self.vm_id)
+        return{'name':self.name, 'application_id':self.application_id, 'assigned_user': username, 'ip':ip }
