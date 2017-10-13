@@ -61,7 +61,7 @@ class Admin(db.Model):
             return None
         clients = []
         for app in apps:
-            client = new Client(self.id, app[0], app[1], app[2])
+            client = Client(self.id, app[0], app[1], app[2])
             clients.append(client)
         return self.insert_clients(clients)
 
@@ -92,7 +92,7 @@ class Admin(db.Model):
             bp.insert()
             return bp.serialize()
 
-            
+
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column('user_id',db.Integer , primary_key=True)
