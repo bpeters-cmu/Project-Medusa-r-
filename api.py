@@ -43,13 +43,12 @@ class VdiClient(Resource):
 
     @auth.login_required
     def get(self, id=None):
-        print('enter get')
         try:
             if not id:
                 clients = models.Client.query.filter_by(admin_id=g.user.id)
                 data = [c.serialize() for c in clients]
                 return data, 200
-            return models.Client.query.get(id).get_token()
+            return models.Client.query.get(id).get_token(), 200
 
         except BaseException as e:
             print('Exception: ', str(e))
@@ -78,8 +77,6 @@ class VdiClient(Resource):
 
     @auth.verify_password
     def verify_password(username, password):
-        print('user:' + username + 'end')
-        print('password: ' + password)
         user = models.Admin.query.filter_by(username = username).first()
         print(user)
         if not user or not user.verify_password(password):
@@ -92,7 +89,6 @@ class Connection(Resource):
 
     @auth.login_required
     def get(self):
-        print('enter get')
         try:
             return g.user.clients[0].get_token(), 200
         except BaseException as e:
@@ -101,8 +97,6 @@ class Connection(Resource):
 
     @auth.verify_password
     def verify_password(username, password):
-        print('user:' + username + 'end')
-        print('password: ' + password)
         user = models.User.query.filter_by(username = username).first()
         print(user)
         if not user or not user.verify_password(password):
