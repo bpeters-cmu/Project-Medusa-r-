@@ -189,7 +189,10 @@ class Client(db.Model):
         if self.user:
             username = self.user.username
         ip = ravello.get_ip(self.application_id, self.vm_id)
-        return{'name':self.name, 'id':self.id, 'assigned_user': username, 'ip':ip or 'Pending' }
+        status = 'Pending'
+        if ip:
+            status = 'Ready'
+        return{'name':self.name, 'id':self.id, 'assigned_user': username, 'status':status }
 
 class Blueprint(db.Model):
     __tablename__ = 'Blueprint'
