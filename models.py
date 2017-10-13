@@ -92,7 +92,7 @@ class Admin(db.Model):
             return self.blueprint[0].serialize()
         else:
             print('3')
-            db.session.delete(self.blureprint[0])
+            db.session.delete(self.blueprint[0])
             db.session.commit()
             bp = Blueprint(self.id, bp_id, description)
             bp.insert()
@@ -196,7 +196,7 @@ class Blueprint(db.Model):
 
     def __init__(self, admin_id, bp_id, description):
         self.admin_id = admin_id
-        self.blueprint_id = bp_id
+        self.bp_id = bp_id
         self.description = description
 
     def insert(self):
