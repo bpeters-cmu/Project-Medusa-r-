@@ -138,7 +138,7 @@ class Blueprint(Resource):
     @auth.login_required
     def get(self):
         try:
-            
+            g.user.get_blueprint()
         except BaseException as e:
             print('Exception: ', str(e))
             return str(e), 400
