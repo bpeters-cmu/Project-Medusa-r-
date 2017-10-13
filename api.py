@@ -49,7 +49,7 @@ class VdiClient(Resource):
                 clients = models.Client.query.filter_by(admin_id=g.user.id)
                 data = [c.serialize() for c in clients]
                 return data, 200
-            token = models.Client.query.get(id).get_token()
+            return models.Client.query.get(id).get_token()
 
         except BaseException as e:
             print('Exception: ', str(e))
@@ -61,6 +61,16 @@ class VdiClient(Resource):
         try:
             return g.user.create_client(data['quantity']), 200
 
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return 'Exception Occurred', 400
+
+    @auth.login_required
+    def put(self, id):
+        data = request.get_json(force=True)
+        try:
+            client = models.Client.query.get(id)
+            return client.start_stop(data['action']), 200
         except BaseException as e:
             print('Exception: ', str(e))
             return 'Exception Occurred', 400

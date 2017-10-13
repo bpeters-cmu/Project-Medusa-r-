@@ -93,3 +93,12 @@ class Ravello:
         r = requests.post(url, auth=(self.username, self.password), headers=headers)
         body = r.json()
         return body['completedSuccessfuly']
+
+    def get_vm_state(self, app_id, vm_id):
+        headers = {'Accept': 'application/json'}
+        url = 'https://cloud.ravellosystems.com/api/v1/applications/'+ app_id +'/vms/'+ vm_id +'/state;deployment'
+        r = requests.get(url, auth=(self.username, self.password), headers=headers)
+        print(r.status_code)
+        print(r.text)
+        body = r.json()
+        return ''

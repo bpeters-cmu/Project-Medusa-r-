@@ -188,11 +188,18 @@ class Client(db.Model):
         username = 'None'
         if self.user:
             username = self.user.username
-        ip = ravello.get_ip(self.application_id, self.vm_id)
-        status = 'Pending'
-        if ip:
-            status = 'Ready'
+        status = ravello.get_vm_state(self.application_id, self.vm_id)
         return{'name':self.name, 'id':self.id, 'assigned_user': username, 'status':status }
+
+    def start_stop(self, action):
+        password = decrypt(self.admin.ravello_password)
+        ravello = Ravello(self.admin.ravello_username, password)
+        if action == 'start':
+            return ravello.start_app(self.application_id)
+        elif action == 'stop':
+            return ravello.stop_app(self.application_id)
+        else:
+            raise Exception('Action must be start or stop')
 
 class Blueprint(db.Model):
     __tablename__ = 'Blueprint'
