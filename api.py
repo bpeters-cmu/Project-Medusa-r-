@@ -107,7 +107,7 @@ class User(Resource):
     def get(self):
         try:
             users = models.User.query.filter_by(admin_id=g.user.id)
-
+            return [u.serialize() for u in users]
         except BaseException as e:
             print('Exception: ', str(e))
             return str(e), 400
@@ -138,7 +138,7 @@ class Blueprint(Resource):
     @auth.login_required
     def get(self):
         try:
-            g.user.get_blueprint()
+            return g.user.get_blueprint(), 200
         except BaseException as e:
             print('Exception: ', str(e))
             return str(e), 400
