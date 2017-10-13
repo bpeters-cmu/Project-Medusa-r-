@@ -18,6 +18,7 @@ class Admin(db.Model):
     ravello_password = db.Column(db.BLOB())
     users = db.relationship('User', backref=db.backref('admin', lazy=True))
     clients = db.relationship('Client', backref=db.backref('admin', lazy=True))
+    blueprint = db.relationship('Blueprint', backref=db.backref('admin', lazy=True))
 
     def __init__(self, username, password, ravello_username, ravello_password):
         self.username = username
@@ -75,9 +76,23 @@ class Admin(db.Model):
             db.session.rollback()
             return False
 
+    def get_blueprint(self):
+        ravello = Ravello(self.ravello_username, self.ravello_password)
+        bp_id, description = ravello.get_gold_image()
+        if not self.blueprint:
+            bp = Blueprint(self.id, bp_id, description)
+            bp.insert()
+            return bp.serialize()
+        if self.blueprint[0].bp_id == bp_id:
+            return self.blueprint[0].serialize()
+        else:
+            db.session.delete(self.blureprint[0])
+            db.session.commit()
+            bp = Blueprint(self.id, bp_id, description)
+            bp.insert()
+            return bp.serialize()
 
-
-
+            
 class User(db.Model):
     __tablename__ = 'User'
     id = db.Column('user_id',db.Integer , primary_key=True)
@@ -154,7 +169,7 @@ class Client(db.Model):
     def get_token(self, ravello):
         json_data = {}
         json_data['connection']['type'] = self.conn_type
-        json_data['connection']['settings']['hostname'] =
+        json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
         json_data['connection']['settings']['username'] = ''
         json_data['connection']['settings']['password'] = ''
         token = json.dumps(json_data).encode('utf-8')
@@ -165,3 +180,29 @@ class Client(db.Model):
         username = self.user.username
         ip = ravello.get_ip(self.application_id, self.vm_id)
         return{'name':self.name, 'application_id':self.application_id, 'assigned_user': username, 'ip':ip }
+
+class Blueprint(db.Model):
+    __tablename__ = 'Blueprint'
+    id = db.Column('blueprint_id',db.Integer , primary_key=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
+    description = db.Column(db.String(128))
+    bp_id = db.Column(db.Integer)
+
+    def __init__(self, admin_id, bp_id, description):
+        self.admin_id = admin_id
+        self.blueprint_id = bp_id
+        self.description = description
+
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return True
+        except BaseException as e:
+            print('exception occurred, rolling back db')
+            print(str(e))
+            db.session.rollback()
+            return False
+
+    def serialize(self):
+        return {'description': self.description}

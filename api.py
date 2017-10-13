@@ -124,13 +124,29 @@ class User(Resource):
             print('Exception: ', str(e))
             return str(e), 400
 
+    @auth.verify_password
+    def verify_password(username, password):
+        user = models.Admin.query.filter_by(username = username).first()
+        if not user or not user.verify_password(password):
+            return False
+        print('User verified')
+        g.user = user
+        return True
+
+class Blueprint(Resource):
+
+    @auth.login_required
+    def get(self):
+        try:
+            
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return str(e), 400
+
 
     @auth.verify_password
     def verify_password(username, password):
-        print('user:' + username + 'end')
-        print('password: ' + password)
         user = models.Admin.query.filter_by(username = username).first()
-        print(user)
         if not user or not user.verify_password(password):
             return False
         print('User verified')

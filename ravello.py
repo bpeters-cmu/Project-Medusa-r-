@@ -66,7 +66,7 @@ class Ravello:
         blueprints = get_blueprints()
         for i in range(len(blueprints)):
             if blueprints[i]['name'] == 'GoldImage':
-                return blueprints[i]['id']
+                return blueprints[i]['id'], blueprints[i]['description']
         return None
 
     def publish_app(id):
