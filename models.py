@@ -172,7 +172,9 @@ class Client(db.Model):
             db.session.rollback()
             return False
 
-    def get_token(self, ravello):
+    def get_token(self):
+        password = decrypt(self.admin.ravello_password)
+        ravello = Ravello(self.admin.ravello_username, password)
         json_data = {}
         json_data['connection']['type'] = self.conn_type
         json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
@@ -183,9 +185,11 @@ class Client(db.Model):
         return base64.urlsafe_b64encode(token)
 
     def serialize(self, ravello):
-        username = self.user.username
+        username = 'None'
+        if self.user:
+            username = self.user.username
         ip = ravello.get_ip(self.application_id, self.vm_id)
-        return{'name':self.name, 'application_id':self.application_id, 'assigned_user': username, 'ip':ip }
+        return{'name':self.name, 'id':self.id, 'assigned_user': username, 'ip':ip or 'Pending' }
 
 class Blueprint(db.Model):
     __tablename__ = 'Blueprint'
