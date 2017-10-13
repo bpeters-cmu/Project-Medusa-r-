@@ -35,7 +35,7 @@ class Ravello:
         return r.json()
 
     def create_applications(self, quantity):
-        bp_id = get_gold_image()
+        bp_id = self.get_gold_image()
         if not bp_id:
             return None
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
@@ -63,7 +63,7 @@ class Ravello:
         return body['ips'][0]
 
     def get_gold_image(self):
-        blueprints = get_blueprints()
+        blueprints = self.get_blueprints()
         for i in range(len(blueprints)):
             if blueprints[i]['name'] == 'GoldImage':
                 return blueprints[i]['id'], blueprints[i]['description']
@@ -78,4 +78,4 @@ class Ravello:
 
     def publish_all(self, apps):
         for app in apps:
-            publish_app(app)
+            self.publish_app(app)
