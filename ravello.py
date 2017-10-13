@@ -9,7 +9,7 @@ class Ravello:
         self.username = username
         self.password = password
 
-    def login():
+    def login(self):
 
         headers = {'Accept': 'application/json'}
         r = requests.post('https://cloud.ravellosystems.com/api/v1/login',auth=(self.username,
@@ -17,14 +17,14 @@ class Ravello:
         print(r.status_code)
         print(r.json())
 
-    def get_applications():
+    def get_applications(self):
         headers = {'Accept': 'application/json'}
         r = requests.get('https://cloud.ravellosystems.com/api/v1/applications',auth=(self.username,
          self.password), headers=headers)
         print(r.status_code)
         print(r.json())
 
-    def get_blueprints(id=None):
+    def get_blueprints(self, id=None):
         headers = {'Accept': 'application/json'}
         if not id:
             r = requests.get('https://cloud.ravellosystems.com/api/v1/blueprints',auth=(self.username,
@@ -34,7 +34,7 @@ class Ravello:
             self.password), headers=headers)
         return r.json()
 
-    def create_applications(quantity):
+    def create_applications(self, quantity):
         bp_id = get_gold_image()
         if not bp_id:
             return None
@@ -54,7 +54,7 @@ class Ravello:
         publish_all(app_ids)
         return apps
 
-    def get_ip(app_id, vm_id):
+    def get_ip(self, app_id, vm_id):
         headers = {'Accept': 'application/json'}
         url = 'https://cloud.ravellosystems.com/api/v1/applications/'+ app_id +'/vms/'+ vm_id +'/publicIps;deployment'
         r = requests.get(url, auth=(self.username, self.password), headers=headers)
@@ -62,20 +62,20 @@ class Ravello:
         body = r.json()
         return body['ips'][0]
 
-    def get_gold_image():
+    def get_gold_image(self):
         blueprints = get_blueprints()
         for i in range(len(blueprints)):
             if blueprints[i]['name'] == 'GoldImage':
                 return blueprints[i]['id'], blueprints[i]['description']
         return None
 
-    def publish_app(id):
+    def publish_app(self, id):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         url = 'https://cloud.ravellosystems.com/api/v1/applications/' + id + '/publish'
         payload = {'preferredRegion': 'us-central-1','optimizationLevel': 'PERFORMANCE_OPTIMIZED'}
         r = requests.post(url, auth=(self.username, self.password),
          headers=headers, data=json.dumps(payload))
 
-    def publish_all(apps):
+    def publish_all(self, apps):
         for app in apps:
             publish_app(app)
