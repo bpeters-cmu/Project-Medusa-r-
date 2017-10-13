@@ -78,7 +78,8 @@ class Admin(db.Model):
 
     def get_blueprint(self):
         print('getting blueprint')
-        ravello = Ravello(self.ravello_username, self.ravello_password)
+        password = decrypt(config.key, self.ravello_password)
+        ravello = Ravello(self.ravello_username, password)
         bp_id, description = ravello.get_gold_image()
         print(bp_id, description)
         if not self.blueprint:
