@@ -56,12 +56,12 @@ class Admin(db.Model):
     def create_clients(self, quantity):
         password = decrypt(config.key, self.ravello_password)
         ravello = Ravello(self.ravello_username, password)
-        apps = ravello.create_applications(quantity)
+        apps = ravello.create_applications(quantity, bp_id=self.blueprint.bp_id)
         if not apps:
             return None
         clients = []
         for app in apps:
-            client = Client(self.id, app[0], app[1], app[2])
+            client = Client(self.id, app[0], app[1], app[2], self.blueprint.bp_id)
             clients.append(client)
         return self.insert_clients(clients)
 
@@ -97,6 +97,12 @@ class Admin(db.Model):
             bp = Blueprint(self.id, bp_id, description)
             bp.insert()
             return bp.serialize()
+
+    def set_blueprint_connection(self, rdp_uname, rdp_pword):
+        self.blueprint[0].rdp_uname = rdp_uname
+        self.blueprint[0].rdp_pword = rdp_pword
+        db.session.commit()
+        return True
 
 
 class User(db.Model):
@@ -143,19 +149,19 @@ class User(db.Model):
 class Client(db.Model):
     __tablename__ = 'Client'
     id = db.Column('client_id',db.Integer , primary_key=True)
-    conn_type = db.Column(db.String(3))
     admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('User.user_id'))
     application_id = db.Column(db.Integer)
     vm_id = db.Column(db.Integer)
     name = db.Column(db.String(128))
+    bp_id = db.Column(db.Integer, db.ForeignKey('Blueprint.blueprint_id'))
 
-    def __init__(self, admin_id, application_id, name, vm_id):
-        self.conn_type = 'rdp'
+    def __init__(self, admin_id, application_id, name, vm_id, bp_id):
         self.admin_id = admin_id
         self.application_id = application_id
         self.name = name
         self.vm_id = vm_id
+        self.bp_id = bp_id
 
     def assign_user(self, user_id):
         self.user_id = user_id
@@ -176,7 +182,7 @@ class Client(db.Model):
         password = decrypt(self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
         json_data = {}
-        json_data['connection']['type'] = self.conn_type
+        json_data['connection']['type'] = 'rdp'
         json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
         json_data['connection']['settings']['username'] = ''
         json_data['connection']['settings']['password'] = ''
@@ -207,6 +213,9 @@ class Blueprint(db.Model):
     admin_id = db.Column(db.Integer, db.ForeignKey('Admin.user_id'), nullable=False)
     description = db.Column(db.String(128))
     bp_id = db.Column(db.Integer)
+    clients = db.relationship('Client', backref=db.backref('blueprint', lazy=True))
+    rdp_uname = db.Column(db.String(50))
+    rdp_pword = db.Column(db.String(50))
 
     def __init__(self, admin_id, bp_id, description):
         self.admin_id = admin_id

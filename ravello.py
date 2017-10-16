@@ -34,10 +34,11 @@ class Ravello:
             self.password), headers=headers)
         return r.json()
 
-    def create_applications(self, quantity):
-        bp_id = self.get_gold_image()
+    def create_applications(self, quantity, bp_id=None):
         if not bp_id:
-            return None
+            bp_id = self.get_gold_image()
+            if not bp_id:
+                return None
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         print(headers)
         apps = []
@@ -65,7 +66,7 @@ class Ravello:
     def get_gold_image(self):
         blueprints = self.get_blueprints()
         for i in range(len(blueprints)):
-            if blueprints[i]['name'] == 'GoldImage':
+            if blueprints[i]['name'].lower() == 'GoldImage'.lower():
                 return blueprints[i]['id'], blueprints[i]['description']
         return None
 

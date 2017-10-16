@@ -58,7 +58,7 @@ class VdiClient(Resource):
     def post(self):
         data = request.get_json(force=True)
         try:
-            return g.user.create_client(data['quantity']), 200
+            return g.user.create_clients(data['quantity']), 200
 
         except BaseException as e:
             print('Exception: ', str(e))
@@ -143,6 +143,15 @@ class Blueprint(Resource):
     def get(self):
         try:
             return g.user.get_blueprint(), 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return str(e), 400
+
+    @auth.login_required
+    def put(self):
+        data = request.get_json(force=True)
+        try:
+            return g.user.set_blueprint_connection(data['rdp_uname'], data['rdp_pword']), 200
         except BaseException as e:
             print('Exception: ', str(e))
             return str(e), 400
