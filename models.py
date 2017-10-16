@@ -143,7 +143,7 @@ class User(db.Model):
 
     def serialize(self):
         clients = [c.serialize() for c in self.clients]
-        return {'username':self.username, 'email': self.email, 'clients':clients}
+        return {'id': self.id, 'username':self.username, 'email': self.email, 'clients':clients}
 
 
 class Client(db.Model):
@@ -166,6 +166,7 @@ class Client(db.Model):
     def assign_user(self, user_id):
         self.user_id = user_id
         db.session.commit()
+        return True
 
     def insert(self):
         try:
@@ -182,6 +183,8 @@ class Client(db.Model):
         password = decrypt(self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
         json_data = {}
+        json_data['connection'] = {}
+        json_data['connection']['settings'] = {}
         json_data['connection']['type'] = 'rdp'
         json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
         json_data['connection']['settings']['username'] = self.blueprint[0].rdp_uname

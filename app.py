@@ -17,6 +17,7 @@ api.add_resource(VdiClient, '/vdi/<id>')
 api.add_resource(Register, '/register')
 api.add_resource(Connection, '/token')
 api.add_resource(User, '/user')
+api.add_resource(User, '/user/<id>', endpoint="users")
 api.add_resource(Login, '/login')
 api.add_resource(Blueprint, '/blueprint')
 

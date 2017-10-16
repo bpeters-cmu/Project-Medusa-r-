@@ -117,6 +117,16 @@ class User(Resource):
             return str(e), 400
 
     @auth.login_required
+    def put(self, id):
+        data = request.get_json(force=True)
+        try:
+            client = models.Client.get(data['id'])
+            return client.assign_user(id), 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return 'Exception Occurred', 400
+
+    @auth.login_required
     def post(self):
         data = request.get_json(force=True)
         try:
