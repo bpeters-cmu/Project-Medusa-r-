@@ -184,8 +184,8 @@ class Client(db.Model):
         json_data = {}
         json_data['connection']['type'] = 'rdp'
         json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
-        json_data['connection']['settings']['username'] = ''
-        json_data['connection']['settings']['password'] = ''
+        json_data['connection']['settings']['username'] = self.blueprint[0].rdp_uname
+        json_data['connection']['settings']['password'] = self.blueprint[0].rdp_pword
         token = json.dumps(json_data).encode('utf-8')
 
         return base64.urlsafe_b64encode(token)
