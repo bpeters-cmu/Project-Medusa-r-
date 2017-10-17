@@ -100,7 +100,7 @@ class Admin(db.Model):
 
     def set_blueprint_connection(self, rdp_uname, rdp_pword):
         self.blueprint[0].rdp_uname = rdp_uname
-        self.blueprint[0].rdp_pword = rdp_pword
+        self.blueprint[0].rdp_pword = encrypt(config.key, rdp_pword)
         db.session.commit()
         return True
 
@@ -180,7 +180,7 @@ class Client(db.Model):
             return False
 
     def get_token(self):
-        password = decrypt(self.admin.ravello_password)
+        password = decrypt(config.key, self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
         json_data = {}
         json_data['connection'] = {}
@@ -188,7 +188,7 @@ class Client(db.Model):
         json_data['connection']['type'] = 'rdp'
         json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
         json_data['connection']['settings']['username'] = self.blueprint[0].rdp_uname
-        json_data['connection']['settings']['password'] = self.blueprint[0].rdp_pword
+        json_data['connection']['settings']['password'] = decrypt(config.key, self.blueprint[0].rdp_pword)
         token = json.dumps(json_data).encode('utf-8')
 
         return {'token': base64.urlsafe_b64encode(token)}
@@ -201,7 +201,7 @@ class Client(db.Model):
         return{'name':self.name, 'id':self.id, 'assigned_user': username, 'status':status }
 
     def start_stop(self, action):
-        password = decrypt(self.admin.ravello_password)
+        password = decrypt(config.key, self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
         if action == 'start':
             return ravello.start_app(self.application_id)
