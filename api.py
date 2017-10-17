@@ -32,7 +32,7 @@ class Register(Resource):
             new_user = models.Admin(data['username'], data['password'], data['ravello_username'],
             data['ravello_password'])
             if new_user.insert():
-                return 'OK',200
+                return 'OK', 201
             return 'User Create Failed', 400
         except BaseException as e:
             print('Exception: ', str(e))
@@ -58,7 +58,7 @@ class VdiClient(Resource):
     def post(self):
         data = request.get_json(force=True)
         try:
-            return g.user.create_clients(data['quantity']), 200
+            return g.user.create_clients(data['quantity']), 201
 
         except BaseException as e:
             print('Exception: ', str(e))
@@ -132,7 +132,7 @@ class User(Resource):
         try:
             new_user = models.User(data['username'], data['password'], data['email'], g.user.id)
             if new_user.insert():
-                return 'OK',200
+                return 'OK', 201
             return 'User Create Failed', 400
         except BaseException as e:
             print('Exception: ', str(e))
