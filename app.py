@@ -1,9 +1,11 @@
 from flask import Flask
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS, cross_origin
 import config
 
 application = Flask(__name__)
+CORS(application)
 api = Api(application)
 
 application.config['SQLALCHEMY_DATABASE_URI'] = config.db_url
