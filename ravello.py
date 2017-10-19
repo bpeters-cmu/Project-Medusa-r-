@@ -50,8 +50,8 @@ class Ravello:
             self.password), headers=headers, data=json.dumps(payload))
             print(r.status_code)
             body = r.json()
-            app_ids.append(str(body['id']))
-            apps.append(str([body['id']), str(body['name']),str(body['design']['vms'][0]['id'])])
+            app_ids.append(str(body['id'])
+            apps.append([body['id'], body['name'],body['design']['vms'][0]['id']])
             print('here')
         self.publish_all(app_ids)
         return apps
@@ -68,7 +68,7 @@ class Ravello:
         blueprints = self.get_blueprints()
         for i in range(len(blueprints)):
             if blueprints[i]['name'].lower() == 'GoldImage'.lower():
-                return str(blueprints[i]['id']), blueprints[i]['description']
+                return blueprints[i]['id'], blueprints[i]['description']
         return None
 
     def publish_app(self, id):

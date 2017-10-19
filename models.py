@@ -61,7 +61,7 @@ class Admin(db.Model):
             return None
 
         for app in apps:
-            client = Client(self.id, app[0], app[1], int(app[2]), self.blueprint[0].id)
+            client = Client(self.id, str(app[0]), app[1], str(app[2]), self.blueprint[0].id)
             self.insert_client(client)
 
     def insert_client(self, client):
@@ -82,7 +82,7 @@ class Admin(db.Model):
         bp_id, description = ravello.get_gold_image()
         print(bp_id, description)
         if not self.blueprint:
-            bp = Blueprint(self.id, bp_id, description)
+            bp = Blueprint(self.id, str(bp_id), description)
             print(bp.serialize())
             bp.insert()
             return bp.serialize()
