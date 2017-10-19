@@ -64,7 +64,9 @@ class Ravello:
         body = r.json()
         print(body)
         print(body['ips'])
-        return body['ips'][0]
+        ip = body['ips'][0]
+        print(ip)
+        return ip
 
     def get_gold_image(self):
         blueprints = self.get_blueprints()
