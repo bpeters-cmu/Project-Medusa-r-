@@ -56,12 +56,12 @@ class Admin(db.Model):
     def create_clients(self, quantity):
         password = decrypt(config.key, self.ravello_password)
         ravello = Ravello(self.ravello_username, password)
-        apps = ravello.create_applications(quantity, bp_id=self.blueprint.bp_id)
+        apps = ravello.create_applications(quantity, bp_id=self.blueprint[0].bp_id)
         if not apps:
             return None
         clients = []
         for app in apps:
-            client = Client(self.id, app[0], app[1], app[2], self.blueprint.bp_id)
+            client = Client(self.id, app[0], app[1], app[2], self.blueprint[0].bp_id)
             clients.append(client)
         return self.insert_clients(clients)
 
