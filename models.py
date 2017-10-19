@@ -62,6 +62,8 @@ class Admin(db.Model):
 
         for app in apps:
             client = Client(self.id, str(app[0]), app[1], str(app[2]), self.blueprint[0].id)
+            print(self.blueprint[0].id)
+            print(client.bp_id)
             self.insert_client(client)
 
     def insert_client(self, client):
@@ -183,7 +185,7 @@ class Client(db.Model):
         ravello = Ravello(self.admin.ravello_username, password)
         print(self.blueprint)
         print(self.blueprint[0].rdp_uname)
-        
+
         json_data = {}
         json_data['connection'] = {}
         json_data['connection']['settings'] = {}
