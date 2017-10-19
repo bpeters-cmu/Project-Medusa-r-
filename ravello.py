@@ -52,7 +52,7 @@ class Ravello:
             body = r.json()
             app_ids.append(str(body['id'])
             apps.append([body['id'], body['name'],body['design']['vms'][0]['id']])
-            print('here')
+            print('test')
         self.publish_all(app_ids)
         return apps
 
