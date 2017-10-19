@@ -50,8 +50,8 @@ class Ravello:
             self.password), headers=headers, data=json.dumps(payload))
             print(r.status_code)
             body = r.json()
-            app_ids.append(str(body['id'])
-            apps.append([body['id'], body['name'],body['design']['vms'][0]['id']])
+            app_ids.append(str(body['id']))
+            apps.append([body['id'], body['name'], body['design']['vms'][0]['id']])            
             print('test')
         self.publish_all(app_ids)
         return apps
