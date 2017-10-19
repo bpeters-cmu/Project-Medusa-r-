@@ -51,7 +51,7 @@ class Ravello:
             print(r.status_code)
             body = r.json()
             app_ids.append(str(body['id']))
-            apps.append([body['id'], body['name'], body['design']['vms'][0]['id']])            
+            apps.append([body['id'], body['name'], body['design']['vms'][0]['id']])
             print('test')
         self.publish_all(app_ids)
         return apps
@@ -105,4 +105,4 @@ class Ravello:
         print(r.status_code)
         print(r.text)
         body = r.json()
-        return ''
+        return r.text
