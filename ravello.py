@@ -62,6 +62,7 @@ class Ravello:
         r = requests.get(url, auth=(self.username, self.password), headers=headers)
         print(r.status_code)
         body = r.json()
+        print(body)
         return body['ips'][0]
 
     def get_gold_image(self):
