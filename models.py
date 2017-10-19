@@ -181,6 +181,9 @@ class Client(db.Model):
     def get_token(self):
         password = decrypt(config.key, self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
+        print(self.blueprint)
+        print(self.blueprint[0].rdp_uname)
+        
         json_data = {}
         json_data['connection'] = {}
         json_data['connection']['settings'] = {}
