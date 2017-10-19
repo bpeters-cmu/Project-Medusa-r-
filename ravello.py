@@ -52,6 +52,7 @@ class Ravello:
             body = r.json()
             app_ids.append(body['id'])
             apps.append([body['id'], body['name'],body['design']['vms'][0]['id']])
+            print('here')
         self.publish_all(app_ids)
         return apps
 
@@ -72,25 +73,27 @@ class Ravello:
 
     def publish_app(self, id):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + id + '/publish'
+        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + str(id) + '/publish'
         payload = {'preferredRegion': 'us-central-1','optimizationLevel': 'PERFORMANCE_OPTIMIZED'}
         r = requests.post(url, auth=(self.username, self.password),
          headers=headers, data=json.dumps(payload))
 
     def publish_all(self, apps):
+        print('apps', apps)
         for app in apps:
+            print('test')
             self.publish_app(app)
 
     def stop_app(self, app_id):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + id + '/stop'
+        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + str(id) + '/stop'
         r = requests.post(url, auth=(self.username, self.password), headers=headers)
         body = r.json()
         return body['completedSuccessfuly']
 
     def start_app(self, app_id):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
-        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + id + '/start'
+        url = 'https://cloud.ravellosystems.com/api/v1/applications/' + str(app_id) + '/start'
         r = requests.post(url, auth=(self.username, self.password), headers=headers)
         body = r.json()
         return body['completedSuccessfuly']
