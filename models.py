@@ -243,4 +243,7 @@ class Blueprint(db.Model):
             return False
 
     def serialize(self):
-        return {'description': self.description}
+        credentials = False
+        if self.rdp_uname and self.rdp_pword
+            credentials = True
+        return {'description': self.description, 'credentials': credentials}
