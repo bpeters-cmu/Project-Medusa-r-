@@ -63,6 +63,7 @@ class Ravello:
         print(r.status_code)
         body = r.json()
         print(body)
+        print(body['ips'])
         return body['ips'][0]
 
     def get_gold_image(self):
