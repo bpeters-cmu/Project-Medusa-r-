@@ -52,7 +52,7 @@ class Ravello:
             body = r.json()
             app_ids.append(body['id'])
             apps.append([body['id'], body['name'],body['design']['vms'][0]['id']])
-        publish_all(app_ids)
+        self.publish_all(app_ids)
         return apps
 
     def get_ip(self, app_id, vm_id):
