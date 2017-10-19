@@ -61,7 +61,7 @@ class Admin(db.Model):
             return None
 
         for app in apps:
-            client = Client(self.id, app[0], app[1], app[2], self.blueprint[0].id)
+            client = Client(self.id, app[0], app[1], int(app[2]), self.blueprint[0].id)
             self.insert_client(client)
 
     def insert_client(self, client):
