@@ -192,7 +192,9 @@ class Client(db.Model):
 
         return {'token': base64.urlsafe_b64encode(token)}
 
-    def serialize(self, ravello):
+    def serialize(self):
+        password = decrypt(config.key, self.admin.ravello_password)
+        ravello = Ravello(self.admin.ravello_username, password)
         username = 'None'
         if self.user:
             username = self.user.username

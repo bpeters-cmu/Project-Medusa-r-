@@ -44,7 +44,7 @@ class VdiClient(Resource):
     @auth.login_required
     def get(self, id=None):
         try:
-            if not id:
+            if not id:                
                 clients = models.Client.query.filter_by(admin_id=g.user.id)
                 data = [c.serialize() for c in clients]
                 return data, 200
