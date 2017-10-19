@@ -59,15 +59,14 @@ class Admin(db.Model):
         apps = ravello.create_applications(quantity, bp_id=self.blueprint[0].bp_id)
         if not apps:
             return None
-        clients = []
+
         for app in apps:
             client = Client(self.id, app[0], app[1], app[2], self.blueprint[0].bp_id)
-            clients.append(client)
-        return self.insert_clients(clients)
+            self.insert_client(client)
 
-    def insert_clients(self, clients):
+    def insert_client(self, client):
         try:
-            db.session.add(clients)
+            db.session.add(client)
             db.session.commit()
             return True
         except BaseException as e:
