@@ -102,6 +102,7 @@ class Admin(db.Model):
     def set_blueprint_connection(self, rdp_uname, rdp_pword):
         self.blueprint[0].rdp_uname = rdp_uname
         self.blueprint[0].rdp_pword = encrypt(config.key, rdp_pword)
+        db.session.add(self.blueprint[0])
         db.session.commit()
         return True
 
