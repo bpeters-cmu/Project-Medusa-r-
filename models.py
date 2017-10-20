@@ -192,14 +192,21 @@ class Client(db.Model):
         print(self.blueprint)
         print(self.blueprint.rdp_uname)
 
+        rdp_password = decrypt(config.key, self.blueprint.rdp_pword).decode('utf8')
+        print('rdp_password' + rdp_password)
         json_data = {}
         json_data['connection'] = {}
         json_data['connection']['settings'] = {}
         json_data['connection']['type'] = 'rdp'
         json_data['connection']['settings']['hostname'] = ravello.get_ip(self.application_id, self.vm_id)
         json_data['connection']['settings']['username'] = self.blueprint.rdp_uname
-        json_data['connection']['settings']['password'] = decrypt(config.key, self.blueprint.rdp_pword).decode('utf8')
+        json_data['connection']['settings']['password'] = str(rdp_password)
         token = json.dumps(json_data).encode('utf-8')
+
+        print(token)
+                # show the encrypted data
+        print (base64.urlsafe_b64encode(token))
+
 
         return base64.urlsafe_b64encode(token)
 
