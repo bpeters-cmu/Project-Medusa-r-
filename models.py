@@ -181,7 +181,7 @@ class Client(db.Model):
             return False
 
     def get_token(self):
-        if not self.rdp_uname or not self.rdp_pword
+        if not self.rdp_uname or not self.rdp_pword:
             return None
 
         password = decrypt(config.key, self.admin.ravello_password)
