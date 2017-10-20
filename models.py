@@ -227,7 +227,7 @@ class Blueprint(db.Model):
     bp_id = db.Column(db.String(128))
     clients = db.relationship('Client', backref=db.backref('blueprint', lazy=True))
     rdp_uname = db.Column(db.String(50))
-    rdp_pword = db.Column(db.String(50))
+    rdp_pword = db.Column(db.BLOB())
 
     def __init__(self, admin_id, bp_id, description):
         self.admin_id = admin_id
