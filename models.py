@@ -88,7 +88,7 @@ class Admin(db.Model):
             print(bp.serialize())
             bp.insert()
             return bp.serialize()
-        if self.blueprint[0].bp_id == bp_id:
+        if self.blueprint[0].bp_id == str(bp_id):
             print('2')
             return self.blueprint[0].serialize()
         else:
