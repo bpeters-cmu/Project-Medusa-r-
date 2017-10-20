@@ -201,7 +201,7 @@ class Client(db.Model):
         json_data['connection']['settings']['password'] = decrypt(config.key, self.blueprint.rdp_pword).decode('utf8')
         token = json.dumps(json_data).encode('utf-8')
 
-        return {'token': base64.urlsafe_b64encode(token)}
+        return base64.urlsafe_b64encode(token)
 
     def serialize(self):
         password = decrypt(config.key, self.admin.ravello_password)
