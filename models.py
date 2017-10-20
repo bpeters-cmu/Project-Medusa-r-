@@ -100,9 +100,13 @@ class Admin(db.Model):
             return bp.serialize()
 
     def set_blueprint_connection(self, rdp_uname, rdp_pword):
+        print(self.blueprint[0].rdp_uname)
+        print(self.blueprint[0].rdp_pword)
         self.blueprint[0].rdp_uname = rdp_uname
         self.blueprint[0].rdp_pword = encrypt(config.key, rdp_pword)
-        db.session.add(self.blueprint[0])
+        print(self.blueprint[0].rdp_uname)
+        print(self.blueprint[0].rdp_pword)
+        db.session.add(self)
         db.session.commit()
         return True
 
@@ -250,4 +254,5 @@ class Blueprint(db.Model):
         credentials = False
         if self.rdp_uname and self.rdp_pword:
             credentials = True
+        print('description ' + self.description + 'credentials' + credentials)
         return {'description': self.description, 'credentials': credentials}
