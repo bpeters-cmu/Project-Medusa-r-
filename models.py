@@ -254,5 +254,5 @@ class Blueprint(db.Model):
         credentials = False
         if self.rdp_uname and self.rdp_pword:
             credentials = True
-        print('description ' + self.description + 'credentials' + credentials)
+        print('description ' + self.description + 'credentials' + str(credentials))
         return {'description': self.description, 'credentials': credentials}
