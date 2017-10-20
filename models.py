@@ -208,7 +208,7 @@ class Client(db.Model):
         print (base64.urlsafe_b64encode(token))
 
 
-        return str(base64.urlsafe_b64encode(token))
+        return {'token': str(base64.urlsafe_b64encode(token))}
 
     def serialize(self):
         password = decrypt(config.key, self.admin.ravello_password)
