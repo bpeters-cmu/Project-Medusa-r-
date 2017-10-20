@@ -99,13 +99,12 @@ class Admin(db.Model):
             bp.insert()
             return bp.serialize()
 
-    def set_blueprint_connection(self, rdp_uname, rdp_pword):        
+    def set_blueprint_connection(self, rdp_uname, rdp_pword):
         blueprint = Blueprint.query.get(self.blueprint[0].id)
         blueprint.rdp_uname = rdp_uname
         blueprint.rdp_pword = encrypt(config.key, rdp_pword)
         print(blueprint.rdp_uname)
         print(blueprint.rdp_pword)
-        db.session.add(blueprint)
         db.session.commit()
         return True
 
