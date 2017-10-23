@@ -43,6 +43,7 @@ class VdiClient(Resource):
 
     @auth.login_required
     def get(self, id=None):
+        print('entering get')
         try:
             if not id:
 
