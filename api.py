@@ -100,7 +100,12 @@ class Connection(Resource):
                 data = [c.serialize() for c in clients]
                 return data, 200
             else:
-                print(id)
+                permission = False
+                for client in g.user.clients:
+                    if client.id == id:
+                        permission = True
+                if not permission:
+                    return 'You do not have access to this Client', 400
                 return models.Client.query.get(id).get_token(), 200
 
         except BaseException as e:
