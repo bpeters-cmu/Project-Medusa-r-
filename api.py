@@ -92,9 +92,17 @@ class VdiClient(Resource):
 class Connection(Resource):
 
     @auth.login_required
-    def get(self):
+    def get(self, id=None):
+        print('entering get')
         try:
-            return g.user.clients[0].get_token(), 200
+            if not id:
+                clients = models.Client.query.filter_by(user_id=g.user.id)
+                data = [c.serialize() for c in clients]
+                return data, 200
+            else:
+                print(id)
+                return models.Client.query.get(id).get_token(), 200
+
         except BaseException as e:
             print('Exception: ', str(e))
             return 'Exception Occurred', 400
