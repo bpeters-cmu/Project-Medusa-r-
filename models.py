@@ -231,6 +231,19 @@ class Client(db.Model):
         else:
             raise Exception('Action must be start or stop')
 
+    def delete(self, action):
+        password = decrypt(config.key, self.admin.ravello_password)
+        ravello = Ravello(self.admin.ravello_username, password)
+        status = ravello.delete_app(self.application_id)
+        if status == 204:
+            db.session.delete(self)
+            db.session.commit()
+            return '', 204
+        else:
+            print('ravello error')
+            return 'ravello error', 404
+
+
 class Blueprint(db.Model):
     __tablename__ = 'Blueprint'
     id = db.Column('blueprint_id',db.Integer , primary_key=True)

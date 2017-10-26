@@ -78,6 +78,16 @@ class VdiClient(Resource):
             print('Exception: ', str(e))
             return 'Exception Occurred', 400
 
+    @auth.login_required
+    def delete(self, id):
+        data = request.get_json(force=True)
+        try:
+            client = models.Client.query.get(id)
+            return client.delete()
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return 'Exception Occurred', 400
+
 
     @auth.verify_password
     def verify_password(username, password):
