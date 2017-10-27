@@ -105,6 +105,8 @@ class Ravello:
     def delete_app(self, app_id):
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         url = 'https://cloud.ravellosystems.com/api/v1/applications/' + app_id
+        print(url)
+        print(self.username, self.password)
         r = requests.delete(url, auth=(self.username, self.password), headers=headers)
         print(r.text)
         return r.status_code
