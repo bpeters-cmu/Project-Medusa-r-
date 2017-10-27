@@ -235,6 +235,7 @@ class Client(db.Model):
         password = decrypt(config.key, self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
         status = ravello.delete_app(self.application_id)
+        print(status)
         if status == 204:
             db.session.delete(self)
             db.session.commit()

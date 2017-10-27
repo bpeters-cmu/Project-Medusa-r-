@@ -80,6 +80,7 @@ class VdiClient(Resource):
 
     @auth.login_required
     def delete(self, id):
+        print('enter delete')
         data = request.get_json(force=True)
         try:
             client = models.Client.query.get(id)
