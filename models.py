@@ -231,7 +231,7 @@ class Client(db.Model):
         else:
             raise Exception('Action must be start or stop')
 
-    def delete(self, action):
+    def delete(self):
         password = decrypt(config.key, self.admin.ravello_password)
         ravello = Ravello(self.admin.ravello_username, password)
         status = ravello.delete_app(self.application_id)
