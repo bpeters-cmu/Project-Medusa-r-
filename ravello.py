@@ -106,6 +106,7 @@ class Ravello:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
         url = 'https://cloud.ravellosystems.com/api/v1/applications/' + app_id
         r = requests.delete(url, auth=(self.username, self.password), headers=headers)
+        print(r.text)
         return r.status_code
 
     def get_vm_state(self, app_id, vm_id):
