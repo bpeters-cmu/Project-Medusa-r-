@@ -147,8 +147,11 @@ class User(Resource):
     def put(self, id):
         data = request.get_json(force=True)
         try:
-            client = models.Client.get(data['client_id'])
-            return client.assign_user(id), 200
+            client_ids = data['client_ids']
+            clients = Client.query.filter(Client.id.in_(client_ids)).all()
+            for client in clients:
+                client.assign_user(id)
+            return True, 200
         except BaseException as e:
             print('Exception: ', str(e))
             return 'Exception Occurred', 400
