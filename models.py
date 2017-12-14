@@ -277,3 +277,25 @@ class Blueprint(db.Model):
             credentials = True
         print('description ' + self.description + 'credentials' + str(credentials))
         return {'description': self.description, 'credentials': credentials}
+
+class OCIUser(db.Model):
+    __tablename__ = 'OCIUser'
+    id = db.Column('user_id',db.Integer , primary_key=True)
+    user_ocid = db.Column(db.String(128))
+    key_path = db.Column(db.String(128))
+    fingerprint = db.Column(db.String(128))
+    tenancy_ocid = db.Column(db.String(128))
+    region = db.Column(db.String(128))
+    compartment_ocid = db.Column(db.String(128))
+
+    def __init__(self, user_ocid, key_path, fingerprint, tenancy_ocid, region, compartment_ocid):
+        self.user_ocid = user_ocid
+        self.key_path = key_path
+        self.fingerprint = fingerprint
+        self.tenancy_ocid = tenancy_ocid
+        self.region = region
+        self.compartment_ocid = compartment_ocid
+
+
+
+        
