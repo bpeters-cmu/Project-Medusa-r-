@@ -28,6 +28,7 @@ class OCILogin(Resource):
 class OCIRegister(Resource):
 
     def post(self):
+        print('register')
         data = request.get_json(force=True)
         try:
             path = '/home/opc/.oci'
