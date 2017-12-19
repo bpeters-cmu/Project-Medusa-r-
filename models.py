@@ -296,6 +296,13 @@ class OCIUser(db.Model):
         self.region = region
         self.compartment_ocid = compartment_ocid
 
-
-
-        
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return True
+        except BaseException as e:
+            print('exception occurred, rolling back db')
+            print(str(e))
+            db.session.rollback()
+            return False

@@ -24,7 +24,7 @@ api_f.add_resource(User, '/user/<id>', endpoint="users")
 api_f.add_resource(Login, '/login')
 api_f.add_resource(Blueprint, '/blueprint')
 
-from oci import OCILogin, OCIRegister
+from oci_endpoint import OCILogin, OCIRegister
 
 api_f.add_resource(OCIRegister, '/ociregister')
 api_f.add_resource(OCILogin, '/ocilogin')
