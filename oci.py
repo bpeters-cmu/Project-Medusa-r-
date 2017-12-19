@@ -38,6 +38,7 @@ class OCIRegister(Resource):
             print('got file')
             path = os.path.join(path, secure_filename(f.filename))
             f.save(path)
+            print(path)
             # new_user = models.Admin(data['u_ocid'], data['fingerprint'], data['tenancy'],data['compartment'], path)
             # if new_user.insert():
             #     return 'OK', 201
