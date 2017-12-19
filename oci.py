@@ -29,15 +29,16 @@ class OCIRegister(Resource):
 
     def post(self):
         print('register')
-        data = request.get_json(force=True)
+        #data = request.get_json(force=True)
+        print(request.data)
         try:
             path = '/home/opc/.oci'
             f = request.files['file']
             path = os.path.join(path, secure_filename(f.filename))
             f.save(path)
-            new_user = models.Admin(data['u_ocid'], data['fingerprint'], data['tenancy'],data['compartment'], path)
-            if new_user.insert():
-                return 'OK', 201
+            # new_user = models.Admin(data['u_ocid'], data['fingerprint'], data['tenancy'],data['compartment'], path)
+            # if new_user.insert():
+            #     return 'OK', 201
             return 'User Create Failed', 400
         except BaseException as e:
             print('Exception: ', str(e))
