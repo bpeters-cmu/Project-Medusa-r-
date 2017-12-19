@@ -6,6 +6,7 @@ import os
 import json
 import base64
 import config
+import oci
 
 
 
@@ -278,9 +279,11 @@ class Blueprint(db.Model):
         print('description ' + self.description + 'credentials' + str(credentials))
         return {'description': self.description, 'credentials': credentials}
 
-class OCIUser(db.Model):
+class OCIAdmin(db.Model):
     __tablename__ = 'OCIUser'
     id = db.Column('user_id',db.Integer , primary_key=True)
+    username = db.Column(db.String(25), unique=True , index=True)
+    password = db.Column(db.String(128))
     user_ocid = db.Column(db.String(128))
     key_path = db.Column(db.String(128))
     fingerprint = db.Column(db.String(128))
@@ -288,13 +291,14 @@ class OCIUser(db.Model):
     region = db.Column(db.String(128))
     compartment_ocid = db.Column(db.String(128))
 
-    def __init__(self, user_ocid, key_path, fingerprint, tenancy_ocid, region, compartment_ocid):
+    def __init__(self, username, password, user_ocid, fingerprint, tenancy_ocid, region, key_path,):
+        self.username = username
+        self.password = self.hash_password(password)
         self.user_ocid = user_ocid
         self.key_path = key_path
         self.fingerprint = fingerprint
         self.tenancy_ocid = tenancy_ocid
         self.region = region
-        self.compartment_ocid = compartment_ocid
 
     def insert(self):
         try:
@@ -306,3 +310,30 @@ class OCIUser(db.Model):
             print(str(e))
             db.session.rollback()
             return False
+
+    def hash_password(self, pword):
+        hashed = phash.hash(pword)
+        print(str(hashed))
+        return hashed
+
+    def verify_password(self, pword):
+        print(phash.verify(pword, self.password))
+        return phash.verify(pword, self.password)
+
+
+    def get_instances
+
+
+import oci
+config = {
+    "user": 'ocid1.user.oc1..aaaaaaaaqwuvrt5r6ilprmbpq5stynbohmc6m6h3cw4ongvuohtg7adenusa',
+    "key_file": 'C:/Users/benpeter/.oci/oci_api_key.pem',
+    "fingerprint": 'f9:80:ae:7b:87:41:7e:b9:eb:78:08:29:63:1b:8f:2b',
+    "tenancy": 'ocid1.tenancy.oc1..aaaaaaaa2ga2wc6bkwwayxq3vmjhjfieamxaxjudiciobpfk7zwcdoykus4q',
+    "region": 'us-phoenix-1'
+}
+
+compute = oci.core.ComputeClient(config)
+response = compute.list_instances("ocid1.compartment.oc1..aaaaaaaapjubpc2gi5b3o7gxqbyyfww6bnuzsnyrjp6scns2zrw3b2kz2qbq")
+
+print(str(response.data))
