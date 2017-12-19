@@ -24,5 +24,10 @@ api_f.add_resource(User, '/user/<id>', endpoint="users")
 api_f.add_resource(Login, '/login')
 api_f.add_resource(Blueprint, '/blueprint')
 
+from oci import OCILogin, OCIRegister
+
+api_f.add_resource(OCIRegister, '/ociregister')
+api_f.add_resource(OCILogin, '/ocilogin')
+
 if __name__ == '__main__':
     application.run(host='0.0.0.0', port='8000', debug=True)

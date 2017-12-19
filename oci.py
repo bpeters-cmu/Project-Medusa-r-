@@ -1,12 +1,13 @@
 from flask import request, g
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
+from werkzeug import secure_filename
 import traceback
 import models
 
 auth = HTTPBasicAuth()
 
-class Login(Resource):
+class OCILogin(Resource):
     @auth.login_required
     def get(self):
         return g.user.__tablename__
@@ -24,13 +25,16 @@ class Login(Resource):
         return False
 
 
-class Register(Resource):
+class OCIRegister(Resource):
 
     def post(self):
         data = request.get_json(force=True)
         try:
-            new_user = models.Admin(data['username'], data['password'], data['ravello_username'],
-            data['ravello_password'])
+            path = '/home/opc/.oci'
+            f = request.files['file']
+            path = os.path.join(path, secure_filename(f.filename))
+            f.save(path)
+            new_user = models.Admin(data['u_ocid'], data['fingerprint'], data['tenancy'],data['compartment'], path)
             if new_user.insert():
                 return 'OK', 201
             return 'User Create Failed', 400
