@@ -4,6 +4,7 @@ from flask_httpauth import HTTPBasicAuth
 from werkzeug import secure_filename
 import traceback
 import models
+import os
 
 auth = HTTPBasicAuth()
 
@@ -30,10 +31,11 @@ class OCIRegister(Resource):
     def post(self):
         print('register')
         #data = request.get_json(force=True)
-        print(request.data)
+        print(request.form['test'])
         try:
             path = '/home/opc/.oci'
             f = request.files['file']
+            print('got file')
             path = os.path.join(path, secure_filename(f.filename))
             f.save(path)
             # new_user = models.Admin(data['u_ocid'], data['fingerprint'], data['tenancy'],data['compartment'], path)
