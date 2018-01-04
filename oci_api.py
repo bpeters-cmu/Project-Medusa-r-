@@ -27,12 +27,17 @@ class OCIApi:
         compartment_ocid = "ocid1.compartment.oc1..aaaaaaaapjubpc2gi5b3o7gxqbyyfww6bnuzsnyrjp6scns2zrw3b2kz2qbq"
         response = compute.list_instances(compartment_ocid)
         data = response.data
-        instance_ocid = ''
+
+        instance_map = {}
+        result = {}
         for item in data:
-            if item.display_name == 'iaas_project_medusa_ad':
-                instance_ocid = item.id
-        ip = self.get_public_ip(compartment_ocid, instance_ocid)
-        print(ip)
+            if 'medusa' in item.display_name:
+                instance_map[item.display_name] = item.id
+
+        for key, value in instance_map.items():
+            result[key] = self.get_public_ip(compartment_ocid, value)
+        
+        return result
 
     def get_public_ip(self, compartment_ocid, instance_ocid):
         vnics = self.get_instance_vnic(compartment_ocid, instance_ocid)
