@@ -292,7 +292,7 @@ class OCIAdmin(db.Model):
     region = db.Column(db.String(128))
     compartments = db.relationship('Compartment', backref='OCIAdmin', lazy=True)
     rdp_username = db.Column(db.String(25))
-    rdp_username = db.Column(db.String(25))
+    rdp_pword = db.Column(db.BLOB())
 
     def __init__(self, username, password, user_ocid, fingerprint, tenancy_ocid, region, key_path):
         self.username = username
@@ -325,11 +325,30 @@ class OCIAdmin(db.Model):
 
     def set_rdp(self, username, password):
         self.rdp_username = rdp_username
-        self.rdp_password = password
+        self.rdp_password = encrypt(config.key, password)
 
     def get_instances(self, compartment_ocid):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerpring, self.tenancy_ocid, self.region)
-        return oci.get_instances(compartment_ocid)
+
+        rdp_password = decrypt(config.key, self.rdp_password).decode('utf8')
+
+        result = oci.get_instances(compartment_ocid)
+        json_data = {}
+        json_data['connection'] = {}
+        json_data['connection']['settings'] = {}
+        json_data['connection']['type'] = 'rdp'
+        json_data['connection']['settings']['hostname'] = result['public_ip']
+        json_data['connection']['settings']['username'] = self.rdp_username
+        json_data['connection']['settings']['password'] = str(rdp_password)
+        token = json.dumps(json_data).encode('utf-8')
+
+        print(token)
+        s_token = str(base64.urlsafe_b64encode(token))
+        s_token = s_token[2:-1]
+        print(s_token)    
+
+        result['token'] = s_token
+        return result
 
     def add_compartment(self, name, compartment_ocid):
         compartment = Compartment(compartment_ocid, name, self.id)
