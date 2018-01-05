@@ -76,7 +76,7 @@ class Compartments(Resource):
         try:
             compartments = g.user.compartments
             if compartments:
-                return return [c.serialize() for c in compartments], 200
+                return [c.serialize() for c in compartments], 200
             return None, 200
         except BaseException as e:
             print('Exception: ', str(e))
