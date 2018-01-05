@@ -39,7 +39,7 @@ class OCIRegister(Resource):
             path = os.path.join(path, secure_filename(f.filename))
             f.save(path)
             print(path)
-            new_user = models.OCIAdmin(data.('username'), data.get('password'), data.get('user_ocid'), data.get('fingerprint'], data.get('tenancy_ocid'), data.get('region'), path)
+            new_user = models.OCIAdmin(data.('username'), data.get('password'), data.get('user_ocid'), data.get('fingerprint'), data.get('tenancy_ocid'), data.get('region'), path)
             if new_user.insert():
                 return 'OK', 201
             return 'User Create Failed', 400
