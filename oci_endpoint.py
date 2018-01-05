@@ -77,8 +77,17 @@ class Compartments(Resource):
             compartments = g.user.compartments
             if compartments:
                 return return [c.serialize() for c in compartments], 200
-            return None
+            return None, 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return 'Exception Occurred', 400
 
+    @auth.login_required
+    def post(self):
+        try:
+            data = request.get_json(force=True)
+            g.user.add_compartment(data['name'], data['compartment_ocid'])
+            return 200
         except BaseException as e:
             print('Exception: ', str(e))
             return 'Exception Occurred', 400

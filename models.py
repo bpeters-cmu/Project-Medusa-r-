@@ -331,9 +331,10 @@ class OCIAdmin(db.Model):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerpring, self.tenancy_ocid, self.region)
         return oci.get_instances(compartment_ocid)
 
-    def set_compartment(self, compartment_ocid):
-        compartment = Compartment(compartment_ocid, self.id)
+    def add_compartment(self, name, compartment_ocid):
+        compartment = Compartment(compartment_ocid, name, self.id)
         compartment.insert()
+        self.compartments.append(compartment)
 
 
 class Compartment(db.Model):
