@@ -68,3 +68,27 @@ class Instances(Resource):
         print('User verified')
         g.user = user
         return True
+
+class Compartments(Resource):
+    @auth.login_required
+    def get(self, compartment_ocid):
+        print('entering get')
+        try:
+            compartments = g.user.compartments
+            if compartments:
+                return return [c.serialize() for c in compartments], 200
+            return None
+
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return 'Exception Occurred', 400
+
+    @auth.verify_password
+    def verify_password(username, password):
+        user = models.OCIAdmin.query.filter_by(username = username).first()
+        print(user)
+        if not user or not user.verify_password(password):
+            return False
+        print('User verified')
+        g.user = user
+        return True

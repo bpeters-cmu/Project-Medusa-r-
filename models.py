@@ -291,8 +291,10 @@ class OCIAdmin(db.Model):
     tenancy_ocid = db.Column(db.String(128))
     region = db.Column(db.String(128))
     compartments = db.relationship('Compartment', backref='OCIAdmin', lazy=True)
+    rdp_username = db.Column(db.String(25))
+    rdp_username = db.Column(db.String(25))
 
-    def __init__(self, username, password, user_ocid, fingerprint, tenancy_ocid, region, key_path,):
+    def __init__(self, username, password, user_ocid, fingerprint, tenancy_ocid, region, key_path):
         self.username = username
         self.password = self.hash_password(password)
         self.user_ocid = user_ocid
@@ -321,14 +323,41 @@ class OCIAdmin(db.Model):
         print(phash.verify(pword, self.password))
         return phash.verify(pword, self.password)
 
+    def set_rdp(self, username, password):
+        self.rdp_username = rdp_username
+        self.rdp_password = password
 
     def get_instances(self, compartment_ocid):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerpring, self.tenancy_ocid, self.region)
         return oci.get_instances(compartment_ocid)
 
+    def set_compartment(self, compartment_ocid):
+        compartment = Compartment(compartment_ocid, self.id)
+        compartment.insert()
+
 
 class Compartment(db.Model):
     __tablename__ = 'Compartment'
     id = db.Column('user_id',db.Integer , primary_key=True)
+    name = db.Column(db.String(25))
     compartment_ocid = db.Column(db.String(50), unique=True , index=True)
-    ociadmin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.id'), nullable=False)
+
+    def __init__(self, compartment_ocid, name, admin_id):
+        self.compartment_ocid = compartment_ocid
+        self.admin_id = admin_id
+        self.name = name
+
+    def insert(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return True
+        except BaseException as e:
+            print('exception occurred, rolling back db')
+            print(str(e))
+            db.session.rollback()
+            return False
+
+    def serialize(self):
+        return {'name': self.name, 'compartment_ocid': self.compartment_ocid}
