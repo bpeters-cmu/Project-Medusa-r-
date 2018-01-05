@@ -30,8 +30,8 @@ class OCIRegister(Resource):
 
     def post(self):
         print('register')
-        print(request.form)
-        data = request.form
+        print(request.form.get_list('username[]'))
+
         try:
             path = '/home/opc/.oci'
             f = request.files['file']
