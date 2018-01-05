@@ -345,7 +345,7 @@ class OCIAdmin(db.Model):
         print(token)
         s_token = str(base64.urlsafe_b64encode(token))
         s_token = s_token[2:-1]
-        print(s_token)    
+        print(s_token)
 
         result['token'] = s_token
         return result
@@ -361,7 +361,7 @@ class Compartment(db.Model):
     id = db.Column('user_id',db.Integer , primary_key=True)
     name = db.Column(db.String(25))
     compartment_ocid = db.Column(db.String(50), unique=True , index=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.user_id'), nullable=False)
 
     def __init__(self, compartment_ocid, name, admin_id):
         self.compartment_ocid = compartment_ocid
