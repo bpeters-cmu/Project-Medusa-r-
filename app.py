@@ -29,7 +29,7 @@ from oci_endpoint import OCILogin, OCIRegister, Instances, Compartments
 api_f.add_resource(OCIRegister, '/ociregister')
 api_f.add_resource(OCILogin, '/ocilogin')
 api_f.add_resource(Instances, '/instances')
-api_f.add_resource(Compartment, '/compartment')
+api_f.add_resource(Compartments, '/compartment')
 
 if __name__ == '__main__':
     application.run(host='0.0.0.0', port='8000', debug=True)
