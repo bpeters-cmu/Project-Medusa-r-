@@ -1,4 +1,4 @@
-from flask import request, g
+from flask import request, g, jsonify
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 from werkzeug import secure_filename
@@ -39,7 +39,7 @@ class OCIRegister(Resource):
             path = os.path.join(path, secure_filename(f.filename))
             f.save(path)
             print(path)
-            new_user = models.OCIAdmin(data['username'], data['password'], data['u_ocid'], data['fingerprint'], data['tenancy'], data['region'], path)
+            new_user = models.OCIAdmin(data['username'], data['password'], data['user_ocid'], data['fingerprint'], data['tenancy_ocid'], data['region'], path)
             if new_user.insert():
                 return 'OK', 201
             return 'User Create Failed', 400
@@ -49,8 +49,15 @@ class OCIRegister(Resource):
 
 class Instances(Resource):
     @auth.login_required
-    def get(self):
-        return g.user.__tablename__
+    def get(self, compartment_ocid):
+        print('entering get')
+        try:
+            instances = g.user.get_instances(compartment_ocid)
+            return flask.jsonify(instances), 200
+
+        except BaseException as e:
+            print('Exception: ', str(e))
+            return 'Exception Occurred', 400
 
     @auth.verify_password
     def verify_password(username, password):

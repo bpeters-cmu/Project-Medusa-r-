@@ -2,6 +2,7 @@ from passlib.hash import pbkdf2_sha256 as phash
 from app import db
 from simplecrypt import encrypt, decrypt
 from ravello import Ravello
+from oci_api import OCIApi
 import os
 import json
 import base64
@@ -280,7 +281,7 @@ class Blueprint(db.Model):
         return {'description': self.description, 'credentials': credentials}
 
 class OCIAdmin(db.Model):
-    __tablename__ = 'OCIUser'
+    __tablename__ = 'OCIAdmin'
     id = db.Column('user_id',db.Integer , primary_key=True)
     username = db.Column(db.String(25), unique=True , index=True)
     password = db.Column(db.String(128))
@@ -289,7 +290,7 @@ class OCIAdmin(db.Model):
     fingerprint = db.Column(db.String(128))
     tenancy_ocid = db.Column(db.String(128))
     region = db.Column(db.String(128))
-    compartment_ocid = db.Column(db.String(128))
+    compartments = db.relationship('Compartment', backref='OCIAdmin', lazy=True)
 
     def __init__(self, username, password, user_ocid, fingerprint, tenancy_ocid, region, key_path,):
         self.username = username
@@ -322,4 +323,12 @@ class OCIAdmin(db.Model):
 
 
     def get_instances(self, compartment_ocid):
-        
+        oci = OCIApi(self.user_ocid, self.key_path, self.fingerpring, self.tenancy_ocid, self.region)
+        return oci.get_instances(compartment_ocid)
+
+
+class Compartment(db.Model):
+    __tablename__ = 'Compartment'
+    id = db.Column('user_id',db.Integer , primary_key=True)
+    compartment_ocid = db.Column(db.String(50), unique=True , index=True)
+    ociadmin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.id'), nullable=False)
