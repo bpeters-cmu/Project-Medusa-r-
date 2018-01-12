@@ -330,9 +330,12 @@ class OCIAdmin(db.Model):
     def get_instances(self, compartment_ocid):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
-        rdp_password = decrypt(config.key, self.rdp_password).decode('utf8')
-
         result = oci.get_instances(compartment_ocid)
+        if not self.rdp_pword:
+            return result
+
+        rdp_password = decrypt(config.key, self.rdp_pword).decode('utf8')
+
         json_data = {}
         json_data['connection'] = {}
         json_data['connection']['settings'] = {}
