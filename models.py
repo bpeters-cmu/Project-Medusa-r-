@@ -331,27 +331,32 @@ class OCIAdmin(db.Model):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
         result = oci.get_instances(compartment_ocid)
-        if not self.rdp_pword:
-            return result
+        instances = []
+        for key, value in result:
+            instance = {}
+            instance['name'] = key
+            if not self.rdp_pword:
+                instance['token'] = None
+                instances.append(instance)
+                continue
 
-        rdp_password = decrypt(config.key, self.rdp_pword).decode('utf8')
+            rdp_password = decrypt(config.key, self.rdp_pword).decode('utf8')
 
-        json_data = {}
-        json_data['connection'] = {}
-        json_data['connection']['settings'] = {}
-        json_data['connection']['type'] = 'rdp'
-        json_data['connection']['settings']['hostname'] = result['public_ip']
-        json_data['connection']['settings']['username'] = self.rdp_username
-        json_data['connection']['settings']['password'] = str(rdp_password)
-        token = json.dumps(json_data).encode('utf-8')
-
-        print(token)
-        s_token = str(base64.urlsafe_b64encode(token))
-        s_token = s_token[2:-1]
-        print(s_token)
-
-        result['token'] = s_token
-        return result
+            json_data = {}
+            json_data['connection'] = {}
+            json_data['connection']['settings'] = {}
+            json_data['connection']['type'] = 'rdp'
+            json_data['connection']['settings']['hostname'] = result['public_ip']
+            json_data['connection']['settings']['username'] = self.rdp_username
+            json_data['connection']['settings']['password'] = str(rdp_password)
+            token = json.dumps(json_data).encode('utf-8')
+            print(token)
+            s_token = str(base64.urlsafe_b64encode(token))
+            s_token = s_token[2:-1]
+            print(s_token)
+            instance['token'] = s_token
+            instances.append(instance)
+        return instances
 
     def add_compartment(self, name, compartment_ocid):
         compartment = Compartment(compartment_ocid, name, self.id)
