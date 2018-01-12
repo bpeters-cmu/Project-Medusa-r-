@@ -71,7 +71,7 @@ class Instances(Resource):
 
 class Compartments(Resource):
     @auth.login_required
-    def get(self, compartment_ocid):
+    def get(self):
         print('entering get')
         try:
             compartments = g.user.compartments
