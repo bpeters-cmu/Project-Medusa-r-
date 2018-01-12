@@ -328,7 +328,7 @@ class OCIAdmin(db.Model):
         self.rdp_password = encrypt(config.key, password)
 
     def get_instances(self, compartment_ocid):
-        oci = OCIApi(self.user_ocid, self.key_path, self.fingerpring, self.tenancy_ocid, self.region)
+        oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
         rdp_password = decrypt(config.key, self.rdp_password).decode('utf8')
 
