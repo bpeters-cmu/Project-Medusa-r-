@@ -49,10 +49,10 @@ class OCIRegister(Resource):
 
 class Instances(Resource):
     @auth.login_required
-    def get(self, compartment_ocid):
+    def get(self, c_ocid):
         print('entering get')
         try:
-            instances = g.user.get_instances(compartment_ocid)
+            instances = g.user.get_instances(c_ocid)
             return flask.jsonify(instances), 200
 
         except BaseException as e:

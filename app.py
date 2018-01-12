@@ -28,7 +28,7 @@ from oci_endpoint import OCILogin, OCIRegister, Instances, Compartments
 
 api_f.add_resource(OCIRegister, '/ociregister')
 api_f.add_resource(OCILogin, '/ocilogin')
-api_f.add_resource(Instances, '/instances')
+api_f.add_resource(Instances, '/instances/<c_ocid>')
 api_f.add_resource(Compartments, '/compartment')
 
 if __name__ == '__main__':
