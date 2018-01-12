@@ -15,16 +15,7 @@ class OCIApi:
 
     def get_instances(self, compartment_ocid=None):
 
-        self.config = {
-            "user": 'ocid1.user.oc1..aaaaaaaawnwprfxu7rx2osz3zwpwlk5pg3ip4ua6igbtc4qle3pjhna3e2ja',
-            "key_file": 'C:/Users/benpeter/.oci/oci_api_key.pem',
-            "fingerprint": 'f9:80:ae:7b:87:41:7e:b9:eb:78:08:29:63:1b:8f:2b',
-            "tenancy": 'ocid1.tenancy.oc1..aaaaaaaa2ga2wc6bkwwayxq3vmjhjfieamxaxjudiciobpfk7zwcdoykus4q',
-            "region": 'us-phoenix-1'
-        }
-
         compute = oci.core.ComputeClient(self.config)
-        compartment_ocid = "ocid1.compartment.oc1..aaaaaaaapjubpc2gi5b3o7gxqbyyfww6bnuzsnyrjp6scns2zrw3b2kz2qbq"
         response = compute.list_instances(compartment_ocid)
         data = response.data
 
@@ -36,7 +27,7 @@ class OCIApi:
 
         for key, value in instance_map.items():
             result[key] = self.get_public_ip(compartment_ocid, value)
-        
+
         return result
 
     def get_public_ip(self, compartment_ocid, instance_ocid):
