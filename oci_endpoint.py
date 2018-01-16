@@ -26,7 +26,7 @@ class OCILogin(Resource):
         return False
 
 
-class OCIRegister(Resource):
+class Admin(Resource):
 
     def post(self):
         print('register')
@@ -46,6 +46,27 @@ class OCIRegister(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             return str(e), 400
+
+        @auth.login_required
+        def put(self):
+            data = request.get_json(force=True)
+            try:
+                g.user.set_rdp(data['username'], data['password'])
+                return 200
+            except BaseException as e:
+                print('Exception: ', str(e))
+                return 'Exception Occurred', 400
+
+
+        @auth.verify_password
+        def verify_password(username, password):
+            user = models.OCIAdmin.query.filter_by(username = username).first()
+            print(user)
+            if not user or not user.verify_password(password):
+                return False
+            print('User verified')
+            g.user = user
+            return True
 
 class Instances(Resource):
     @auth.login_required
