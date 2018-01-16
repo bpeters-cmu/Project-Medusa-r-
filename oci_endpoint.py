@@ -36,6 +36,8 @@ class Admin(Resource):
             path = '/home/opc/.oci'
             f = request.files['file']
             print('got file')
+            if not os.path.exists(path):
+                os.makedirs(path)
             path = os.path.join(path, secure_filename(f.filename))
             f.save(path)
             print(path)
