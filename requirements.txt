@@ -12,7 +12,6 @@ Flask-Cors==3.0.3
 Flask-HTTPAuth==3.2.3
 Flask-RESTful==0.3.6
 Flask-SQLAlchemy==2.3.2
-get==0.0.0
 gevent==1.2.2
 greenlet==0.4.12
 gunicorn==19.7.1
