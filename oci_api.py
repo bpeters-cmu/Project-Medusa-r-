@@ -30,8 +30,8 @@ class OCIApi:
         for key, value in instance_map.items():
             print('key'+ key)
             print('value: ' + value)
-            result[key] = self.get_public_ip(compartment_ocid, instance_map[key])
-
+            result[key] = self.get_public_ip(compartment_ocid, value)
+        print('result: ' + result)
         return result
 
     def get_public_ip(self, compartment_ocid, instance_ocid):
@@ -45,8 +45,10 @@ class OCIApi:
         network = oci.core.VirtualNetworkClient(self.config)
         vnic = []
         vnic_attachments = compute.list_vnic_attachments(compartment,instance_id=instance_id).data
+        print(vnic_attachments)
         for attachment in vnic_attachments:
             if attachment.lifecycle_state == "ATTACHED":
+                print('test')
                 vnic_attachment = network.get_vnic(attachment.vnic_id).data
                 vnic.append(vnic_attachment)
         return vnic
