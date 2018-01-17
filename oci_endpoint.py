@@ -79,7 +79,7 @@ class Instances(Resource):
         try:
             print('getting instances')
             instances = g.user.get_instances(c_ocid)
-            return jsonify(instances), 200
+            return instances, 200
 
         except BaseException as e:
             print('Exception: ', str(e))
