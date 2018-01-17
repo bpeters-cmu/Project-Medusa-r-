@@ -324,8 +324,8 @@ class OCIAdmin(db.Model):
         return phash.verify(pword, self.password)
 
     def set_rdp(self, username, password):
-        self.rdp_username = rdp_username
-        self.rdp_password = encrypt(config.key, password)
+        self.rdp_username = username
+        self.rdp_pword = encrypt(config.key, password)
 
     def get_instances(self, compartment_name):
         print('enter get instances')
