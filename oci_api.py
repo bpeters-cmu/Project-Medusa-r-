@@ -23,10 +23,12 @@ class OCIApi:
         instance_map = {}
         result = {}
         for item in data:
+            print('item display: ' + item.display_name)
             if 'medusa' in item.display_name:
                 instance_map[item.display_name] = item.id
 
         for key, value in instance_map.items():
+            print('key'+ key)
             result[key] = self.get_public_ip(compartment_ocid, value)
 
         return result
