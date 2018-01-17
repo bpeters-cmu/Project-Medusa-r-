@@ -331,6 +331,7 @@ class OCIAdmin(db.Model):
         print('enter get instances')
         print('compartment_name ' + compartment_name)
         compartment = Compartment.query.filter_by(name=compartment_name).first()
+        print(compartment)
 
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
