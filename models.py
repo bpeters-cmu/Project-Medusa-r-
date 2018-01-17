@@ -336,7 +336,7 @@ class OCIAdmin(db.Model):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
         result = oci.get_instances(compartment.compartment_ocid)
-        print('result ' +result)
+        print('result ' +str(result))
         instances = []
         for key, value in result:
             instance = {}
