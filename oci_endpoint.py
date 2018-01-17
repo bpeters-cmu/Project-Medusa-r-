@@ -75,6 +75,7 @@ class Instances(Resource):
     def get(self, c_ocid):
         print('entering get')
         try:
+            print('getting instances')
             instances = g.user.get_instances(c_ocid)
             return flask.jsonify(instances), 200
 
