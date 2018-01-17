@@ -47,6 +47,7 @@ class Admin(Resource):
             return 'User Create Failed', 400
         except BaseException as e:
             print('Exception: ', str(e))
+            traceback.print_exc()
             return str(e), 400
 
         @auth.login_required
@@ -57,6 +58,7 @@ class Admin(Resource):
                 return 200
             except BaseException as e:
                 print('Exception: ', str(e))
+                traceback.print_exc()
                 return 'Exception Occurred', 400
 
 
@@ -81,6 +83,7 @@ class Instances(Resource):
 
         except BaseException as e:
             print('Exception: ', str(e))
+            traceback.print_exc()
             return 'Exception Occurred', 400
 
     @auth.verify_password
@@ -104,6 +107,7 @@ class Compartments(Resource):
             return None, 200
         except BaseException as e:
             print('Exception: ', str(e))
+            traceback.print_exc()
             return 'Exception Occurred', 400
 
     @auth.login_required
@@ -114,6 +118,7 @@ class Compartments(Resource):
             return 200
         except BaseException as e:
             print('Exception: ', str(e))
+            traceback.print_exc()
             return 'Exception Occurred', 400
 
     @auth.verify_password
