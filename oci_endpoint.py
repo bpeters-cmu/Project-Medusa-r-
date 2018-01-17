@@ -97,10 +97,9 @@ class Compartments(Resource):
     def get(self):
         print('entering get')
         try:
-            compartments = g.user.compartments
-            comps = models.Compartment.query.filter(models.Compartment.id.in_(compartments)).all()
-            if comps:
-                return [c.serialize() for c in comps], 200
+            compartments = models.Compartment.filter_by(admin_id=g.user.user_id)
+            if compartments:
+                return [c.serialize() for c in compartments], 200
             return None, 200
         except BaseException as e:
             print('Exception: ', str(e))
