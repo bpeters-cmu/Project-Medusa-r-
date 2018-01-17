@@ -36,8 +36,8 @@ class OCIApi:
 
     def get_public_ip(self, compartment_ocid, instance_ocid):
         print('get pub ip')
-        vnics = self.get_instance_vnic(compartment_ocid, instance_ocid)
-        return vnics[0].public_ip
+        vnic = self.get_instance_vnic(compartment_ocid, instance_ocid)
+        return vnic.public_ip
 
     def get_instance_vnic(self, compartment,instance_id):
         print('get instance vnic')
@@ -51,5 +51,5 @@ class OCIApi:
                 print('test')
                 vnic_attachment = network.get_vnic(attachment.vnic_id).data
                 print(vnic_attachment)
-                vnic.append(vnic_attachment)
-        return vnic
+                return vnic_attachment
+        return None
