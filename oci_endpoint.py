@@ -54,7 +54,9 @@ class Admin(Resource):
     def put(self):
         data = request.get_json(force=True)
         try:
-            g.user.set_rdp(data['username'], data['password'])
+            username = data['username']
+            password = data['password']
+            g.user.set_rdp(username, password)
             return 200
         except BaseException as e:
             print('Exception: ', str(e))

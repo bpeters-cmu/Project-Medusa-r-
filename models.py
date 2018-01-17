@@ -327,6 +327,8 @@ class OCIAdmin(db.Model):
         print('setting rdp')
         self.rdp_username = username
         self.rdp_pword = encrypt(config.key, password)
+        print(self.rdp_username)
+        print(self.rdp_pword)
         db.session.add(self)
         db.session.commit()
 
