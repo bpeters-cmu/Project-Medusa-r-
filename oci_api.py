@@ -50,5 +50,6 @@ class OCIApi:
             if attachment.lifecycle_state == "ATTACHED":
                 print('test')
                 vnic_attachment = network.get_vnic(attachment.vnic_id).data
+                print(vnic_attachment)
                 vnic.append(vnic_attachment)
         return vnic
