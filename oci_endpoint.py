@@ -98,6 +98,7 @@ class Compartments(Resource):
         print('entering get')
         try:
             compartments = g.user.compartments
+            print('compartments ' + compartments)
             if compartments:
                 return [c.serialize() for c in compartments], 200
             return None, 200
