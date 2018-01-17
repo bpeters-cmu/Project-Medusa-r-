@@ -327,10 +327,14 @@ class OCIAdmin(db.Model):
         self.rdp_username = rdp_username
         self.rdp_password = encrypt(config.key, password)
 
-    def get_instances(self, compartment_ocid):
+    def get_instances(self, compartment_name):
+        print('enter get instances')
+        compartment = Compartment.query.filter_by(name=compartment_name).first()
+
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
-        result = oci.get_instances(compartment_ocid)
+        result = oci.get_instances(compartment.compartment_ocid)
+        print('result ' +result)
         instances = []
         for key, value in result:
             instance = {}
