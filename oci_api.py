@@ -15,10 +15,11 @@ class OCIApi:
 
     def get_instances(self, compartment_ocid=None):
 
+        print('get_instances')
         compute = oci.core.ComputeClient(self.config)
         response = compute.list_instances(compartment_ocid)
         data = response.data
-
+        print(data)
         instance_map = {}
         result = {}
         for item in data:
