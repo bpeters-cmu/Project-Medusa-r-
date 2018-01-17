@@ -326,6 +326,7 @@ class OCIAdmin(db.Model):
     def set_rdp(self, username, password):
         self.rdp_username = username
         self.rdp_pword = encrypt(config.key, password)
+        db.session.commit()
 
     def get_instances(self, compartment_name):
         print('enter get instances')
