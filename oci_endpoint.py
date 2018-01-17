@@ -98,7 +98,7 @@ class Compartments(Resource):
         print('entering get')
         try:
             compartments = g.user.compartments
-            comps = models.Compartment.query.filter_by(id in compartments)
+            comps = models.Compartment.query.filter_by(Compartment.id.in_(compartments)).all()
             print(comps[0])
             if comps:
                 return [c.serialize() for c in comps], 200
