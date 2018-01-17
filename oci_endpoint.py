@@ -50,27 +50,27 @@ class Admin(Resource):
             traceback.print_exc()
             return str(e), 400
 
-        @auth.login_required
-        def put(self):
-            data = request.get_json(force=True)
-            try:
-                g.user.set_rdp(data['username'], data['password'])
-                return 200
-            except BaseException as e:
-                print('Exception: ', str(e))
-                traceback.print_exc()
-                return 'Exception Occurred', 400
+    @auth.login_required
+    def put(self):
+        data = request.get_json(force=True)
+        try:
+            g.user.set_rdp(data['username'], data['password'])
+            return 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            traceback.print_exc()
+            return 'Exception Occurred', 400
 
 
-        @auth.verify_password
-        def verify_password(username, password):
-            user = models.OCIAdmin.query.filter_by(username = username).first()
-            print(user)
-            if not user or not user.verify_password(password):
-                return False
-            print('User verified')
-            g.user = user
-            return True
+    @auth.verify_password
+    def verify_password(username, password):
+        user = models.OCIAdmin.query.filter_by(username = username).first()
+        print(user)
+        if not user or not user.verify_password(password):
+            return False
+        print('User verified')
+        g.user = user
+        return True
 
 class Instances(Resource):
     @auth.login_required
