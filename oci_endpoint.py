@@ -98,9 +98,10 @@ class Compartments(Resource):
         print('entering get')
         try:
             compartments = g.user.compartments
-            print('compartments ' + compartments)
-            if compartments:
-                return [c.serialize() for c in compartments], 200
+            comps = models.Compartment.query.get(compartments)
+            print(comps[0])
+            if comps:
+                return [c.serialize() for c in comps], 200
             return None, 200
         except BaseException as e:
             print('Exception: ', str(e))
