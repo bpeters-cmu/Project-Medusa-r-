@@ -97,7 +97,7 @@ class Compartments(Resource):
     def get(self):
         print('entering get')
         try:
-            compartments = models.Compartment.query.filter_by(admin_id=g.user.user_id)
+            compartments = models.Compartment.query.filter_by(admin_id=g.user.id)
             if compartments:
                 return [c.serialize() for c in compartments], 200
             return None, 200
