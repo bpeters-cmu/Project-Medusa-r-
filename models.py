@@ -368,7 +368,7 @@ class Compartment(db.Model):
     __tablename__ = 'Compartment'
     id = db.Column('user_id',db.Integer , primary_key=True)
     name = db.Column(db.String(25))
-    compartment_ocid = db.Column(db.String(50), unique=True , index=True)
+    compartment_ocid = db.Column(db.String(128), unique=True , index=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.user_id'), nullable=False)
 
     def __init__(self, compartment_ocid, name, admin_id):
