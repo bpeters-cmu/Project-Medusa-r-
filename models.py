@@ -357,7 +357,7 @@ class OCIAdmin(db.Model):
             json_data['connection'] = {}
             json_data['connection']['settings'] = {}
             json_data['connection']['type'] = 'rdp'
-            json_data['connection']['settings']['hostname'] = result['public_ip']
+            json_data['connection']['settings']['hostname'] = value
             json_data['connection']['settings']['username'] = self.rdp_username
             json_data['connection']['settings']['password'] = str(rdp_password)
             token = json.dumps(json_data).encode('utf-8')
