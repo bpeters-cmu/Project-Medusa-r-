@@ -360,6 +360,7 @@ class OCIAdmin(db.Model):
             json_data['connection']['settings']['hostname'] = value
             json_data['connection']['settings']['username'] = self.rdp_username
             json_data['connection']['settings']['password'] = str(rdp_password)
+            json_data['connection']['settings']['console-audio'] = True 
             token = json.dumps(json_data).encode('utf-8')
             print(token)
             s_token = str(base64.urlsafe_b64encode(token))
