@@ -28,7 +28,6 @@ pycrypto==2.6.1
 python-dateutil==2.5.3
 pytz==2016.10
 requests==2.11.1
-setupfiles==0.0.50
 simple-crypt==4.1.7
 six==1.10.0
 SQLAlchemy==1.1.14
