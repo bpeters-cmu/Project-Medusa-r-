@@ -2,6 +2,7 @@ from flask import request, g, jsonify
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 from werkzeug import secure_filename
+import logging
 import traceback
 import models
 import os
@@ -29,7 +30,7 @@ class OCILogin(Resource):
 class Admin(Resource):
 
     def post(self):
-        print('register')
+        logging.info('Registering new user')
         data = request.form
 
         try:
@@ -47,6 +48,7 @@ class Admin(Resource):
             return 'User Create Failed', 400
         except BaseException as e:
             print('Exception: ', str(e))
+            logging.debug('Exception: ', str(e))
             traceback.print_exc()
             return str(e), 400
 
