@@ -152,6 +152,7 @@ class Consoles(Resource):
     def put(self):
         try:
             path = '/medusa_keys'
+            print(request.form)
             f = request.files['file']
             data = request.form
             print('got file')
