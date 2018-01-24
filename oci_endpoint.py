@@ -151,7 +151,7 @@ class Consoles(Resource):
     @auth.login_required
     def post(self):
         try:
-            path = '/home/opc/medusa_keys'
+            path = '/medusa_keys'
             print(request.form)
             f = request.files['file']
             data = request.form
