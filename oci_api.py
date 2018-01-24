@@ -13,7 +13,7 @@ class OCIApi:
             "region": region
         }
 
-    def get_instances(self, compartment_ocid=None):
+    def get_instances(self, compartment_ocid=None, tag_name):
 
         print('get_instances')
         compute = oci.core.ComputeClient(self.config)
@@ -24,7 +24,7 @@ class OCIApi:
         result = {}
         for item in data:
             print('item display: ' + item.display_name)
-            if 'medusa' in item.display_name:
+            if tag_name in item.display_name:
                 instance_map[item.display_name] = item.id
 
         for key, value in instance_map.items():

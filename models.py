@@ -340,7 +340,7 @@ class OCIAdmin(db.Model):
 
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
-        result = oci.get_instances(compartment.compartment_ocid)
+        result = oci.get_instances(compartment.compartment_ocid, 'medusa')
         print('result ' +str(result))
         instances = []
         for key, value in result.items():
@@ -360,7 +360,7 @@ class OCIAdmin(db.Model):
             json_data['connection']['settings']['hostname'] = value
             json_data['connection']['settings']['username'] = self.rdp_username
             json_data['connection']['settings']['password'] = str(rdp_password)
-            json_data['connection']['settings']['console-audio'] = True 
+            json_data['connection']['settings']['console-audio'] = True
             token = json.dumps(json_data).encode('utf-8')
             print(token)
             s_token = str(base64.urlsafe_b64encode(token))
@@ -374,6 +374,24 @@ class OCIAdmin(db.Model):
         compartment = Compartment(compartment_ocid, name, self.id)
         compartment.insert()
         self.compartments.append(compartment)
+    def get_console_instances(self, compartment_name):
+        print('enter get instances')
+        print('compartment_name ' + compartment_name)
+        compartment = Compartment.query.filter_by(name=compartment_name).first()
+        print(compartment.compartment_ocid)
+        oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
+        result = oci.get_instances(compartment.compartment_ocid, 'linux')
+        instances = []
+        for key, value in result.items():
+            instance = {}
+            instance['name'] = key
+            instance['ip'] = value
+            if os.path.exists('/medusa' + value):
+                instance['key'] = True
+            else:
+                instance['key'] = False
+            instances.add(instance)
+        return instances
 
 
 class Compartment(db.Model):

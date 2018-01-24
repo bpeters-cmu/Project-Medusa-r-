@@ -134,3 +134,43 @@ class Compartments(Resource):
         print('User verified')
         g.user = user
         return True
+
+class Consoles(Resource):
+    @auth.login_required
+    def get(self, c_ocid):
+        print('entering get')
+        try:
+            print('getting instances')
+            instances = g.user.get_console_instances(c_ocid)
+            return instances, 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            traceback.print_exc()
+            return 'Exception Occurred', 400
+
+    @auth.login_required
+    def put(self):
+        try:
+            path = '/medusa_keys'
+            f = request.files['file']
+            data = request.form
+            print('got file')
+            if not os.path.exists(path):
+                os.makedirs(path)
+            path = os.path.join(path, secure_filename(data['ip']))
+            f.save(path)
+            return 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            traceback.print_exc()
+            return 'Exception Occurred', 400
+
+    @auth.verify_password
+    def verify_password(username, password):
+        user = models.OCIAdmin.query.filter_by(username = username).first()
+        print(user)
+        if not user or not user.verify_password(password):
+            return False
+        print('User verified')
+        g.user = user
+        return True
