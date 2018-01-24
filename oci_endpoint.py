@@ -149,7 +149,7 @@ class Consoles(Resource):
             return 'Exception Occurred', 400
 
     @auth.login_required
-    def put(self):
+    def post(self):
         try:
             path = '/medusa_keys'
             print(request.form)
