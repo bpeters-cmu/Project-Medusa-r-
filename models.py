@@ -386,7 +386,7 @@ class OCIAdmin(db.Model):
             instance = {}
             instance['name'] = key
             instance['ip'] = value
-            if os.path.exists('/medusa' + value):
+            if os.path.exists('/home/opc/medusa_keys/' + value):
                 instance['key'] = True
             else:
                 instance['key'] = False
