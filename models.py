@@ -340,7 +340,7 @@ class OCIAdmin(db.Model):
 
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
-        result = oci.get_instances(compartment.compartment_ocid, 'medusa')
+        result = oci.get_instances(compartment.compartment_ocid, 'medusa_ad')
         print('result ' +str(result))
         instances = []
         for key, value in result.items():
@@ -390,7 +390,7 @@ class OCIAdmin(db.Model):
                 instance['key'] = True
             else:
                 instance['key'] = False
-            instances.add(instance)
+            instances.append(instance)
         return instances
 
 
