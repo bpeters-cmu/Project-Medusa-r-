@@ -13,7 +13,7 @@ class OCIApi:
             "region": region
         }
 
-    def get_instances(self, compartment_ocid=None, tag_name):
+    def get_instances(self, compartment_ocid, tag_name):
 
         print('get_instances')
         compute = oci.core.ComputeClient(self.config)
