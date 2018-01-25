@@ -34,7 +34,7 @@ class Admin(Resource):
         data = request.form
 
         try:
-            path = 'home/opc/.oci'
+            path = '/home/opc/.oci'
             f = request.files['file']
             print('got file')
             if not os.path.exists(path):
