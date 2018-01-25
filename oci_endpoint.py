@@ -63,7 +63,7 @@ class Admin(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()
-            return 'Exception Occurred', 400
+            return str(e), 400
 
 
     @auth.verify_password
@@ -88,7 +88,7 @@ class Instances(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()
-            return 'Exception Occurred', 400
+            return str(e), 400
 
     @auth.verify_password
     def verify_password(username, password):
@@ -112,7 +112,7 @@ class Compartments(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()
-            return 'Exception Occurred', 400
+            return str(e), 400
 
     @auth.login_required
     def post(self):
@@ -123,7 +123,7 @@ class Compartments(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()
-            return 'Exception Occurred', 400
+            return str(e), 400
 
     @auth.verify_password
     def verify_password(username, password):
@@ -146,7 +146,7 @@ class Consoles(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()
-            return 'Exception Occurred', 400
+            return str(e), 400
 
     @auth.login_required
     def post(self):
@@ -164,7 +164,7 @@ class Consoles(Resource):
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()
-            return 'Exception Occurred', 400
+            return str(e), 400
 
     @auth.verify_password
     def verify_password(username, password):
