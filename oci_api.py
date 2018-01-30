@@ -61,5 +61,5 @@ class OCIApi:
             comp = {}
             comp['name'] = c.description
             comp['ocid'] = c.id
-            result_list.append(comp)
+            compartments.append(comp)
         return compartments
