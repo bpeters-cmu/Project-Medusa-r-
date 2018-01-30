@@ -337,6 +337,7 @@ class OCIAdmin(db.Model):
 
         result = oci.get_instances(compartment_ocid)
         print('result ' +str(result))
+        print(result.windows)
         if result['windows']:
             for instance in result['windows']:
                 if not self.rdp_pword:
