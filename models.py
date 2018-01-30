@@ -290,7 +290,6 @@ class OCIAdmin(db.Model):
     fingerprint = db.Column(db.String(128))
     tenancy_ocid = db.Column(db.String(128))
     region = db.Column(db.String(128))
-    compartments = db.relationship('Compartment', backref='OCIAdmin', lazy=True)
     rdp_username = db.Column(db.String(25))
     rdp_pword = db.Column(db.BLOB())
 
@@ -365,4 +364,3 @@ class OCIAdmin(db.Model):
                 else:
                     instance['key'] = False
         return result
-            
