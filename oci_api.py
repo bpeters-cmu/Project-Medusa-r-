@@ -33,7 +33,7 @@ class OCIApi:
                     instance['ip'] = self.get_public_ip(compartment_ocid, i.id)
                     instance_info['windows'].append(instance)
         return instance_info
-        
+
     def get_public_ip(self, compartment_ocid, instance_ocid):
         print('get pub ip')
         vnic = self.get_instance_vnic(compartment_ocid, instance_ocid)
@@ -57,10 +57,12 @@ class OCIApi:
     def get_compartments(self):
         identity = oci.identity.IdentityClient(self.config)
         result = oci.pagination.list_call_get_all_results(identity.list_compartments, self.config['tenancy'])
+        result = {}
         compartments = []
         for c in result.data:
             comp = {}
             comp['name'] = c.description
             comp['ocid'] = c.id
             compartments.append(comp)
-        return compartments
+        result['compartments'] = compartments
+        return result
