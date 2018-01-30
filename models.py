@@ -337,8 +337,7 @@ class OCIAdmin(db.Model):
 
         result = oci.get_instances(compartment_ocid)
         print('result ' +str(result))
-        print(result['windows'])
-        if result['windows']:
+        if 'windows' in result:
             for instance in result['windows']:
                 if not self.rdp_pword:
                     instance['token'] = None
@@ -358,7 +357,7 @@ class OCIAdmin(db.Model):
                 s_token = s_token[2:-1]
                 print(s_token)
                 instance['token'] = s_token
-        if result['linux']:
+        if 'linux' in result:
             for instance in result['linux']:
                 if os.path.exists('/medusa_keys/' + instance['ip']):
                     instance['key'] = True
