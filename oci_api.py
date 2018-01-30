@@ -54,6 +54,7 @@ class OCIApi:
         return None
 
     def get_compartments(self):
+        identity = oci.identity.IdentityClient(config)
         result = oci.pagination.list_call_get_all_results(identity.list_compartments, config['tenancy'])
         compartments = []
         for c in result.data:
