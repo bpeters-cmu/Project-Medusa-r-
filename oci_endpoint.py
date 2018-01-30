@@ -2,6 +2,7 @@ from flask import request, g, jsonify
 from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 from werkzeug import secure_filename
+from oci_api import OCIApi
 import logging
 import traceback
 import models
