@@ -57,12 +57,12 @@ class OCIApi:
     def get_compartments(self):
         identity = oci.identity.IdentityClient(self.config)
         result = oci.pagination.list_call_get_all_results(identity.list_compartments, self.config['tenancy'])
-        result = {}
+        comps = {}
         compartments = []
         for c in result.data:
             comp = {}
             comp['name'] = c.description
             comp['ocid'] = c.id
             compartments.append(comp)
-        result['compartments'] = compartments
-        return result
+        comps['compartments'] = compartments
+        return comps
