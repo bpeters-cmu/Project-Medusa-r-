@@ -89,6 +89,23 @@ class Instances(Resource):
             print('Exception: ', str(e))
             traceback.print_exc()
             return str(e), 400
+    @auth.login_required
+    def post(self, c_ocid=None):
+        try:
+            path = '/medusa_keys'
+            print(request.form)
+            f = request.files['file']
+            data = request.form
+            print('got file')
+            if not os.path.exists(path):
+                os.makedirs(path)
+            path = os.path.join(path, secure_filename(data['ip']))
+            f.save(path)
+            return 200
+        except BaseException as e:
+            print('Exception: ', str(e))
+            traceback.print_exc()
+            return str(e), 400
 
     @auth.verify_password
     def verify_password(username, password):
@@ -105,62 +122,8 @@ class Compartments(Resource):
     def get(self):
         print('entering get')
         try:
-            compartments = models.Compartment.query.filter_by(admin_id=g.user.id)
-            if compartments:
-                return [c.serialize() for c in compartments], 200
-            return None, 200
-        except BaseException as e:
-            print('Exception: ', str(e))
-            traceback.print_exc()
-            return str(e), 400
-
-    @auth.login_required
-    def post(self):
-        try:
-            data = request.get_json(force=True)
-            g.user.add_compartment(data['name'], data['compartment_ocid'])
-            return 200
-        except BaseException as e:
-            print('Exception: ', str(e))
-            traceback.print_exc()
-            return str(e), 400
-
-    @auth.verify_password
-    def verify_password(username, password):
-        user = models.OCIAdmin.query.filter_by(username = username).first()
-        print(user)
-        if not user or not user.verify_password(password):
-            return False
-        print('User verified')
-        g.user = user
-        return True
-
-class Consoles(Resource):
-    @auth.login_required
-    def get(self, c_ocid):
-        print('entering get')
-        try:
-            print('getting instances')
-            instances = g.user.get_console_instances(c_ocid)
-            return instances, 200
-        except BaseException as e:
-            print('Exception: ', str(e))
-            traceback.print_exc()
-            return str(e), 400
-
-    @auth.login_required
-    def post(self):
-        try:
-            path = '/medusa_keys'
-            print(request.form)
-            f = request.files['file']
-            data = request.form
-            print('got file')
-            if not os.path.exists(path):
-                os.makedirs(path)
-            path = os.path.join(path, secure_filename(data['ip']))
-            f.save(path)
-            return 200
+            oci = OCIApi(g.user.user_ocid, g.user.key_path, g.user.fingerprint, g.user.tenancy_ocid, g.user.region)
+            return oci.get_compartments(), 200
         except BaseException as e:
             print('Exception: ', str(e))
             traceback.print_exc()

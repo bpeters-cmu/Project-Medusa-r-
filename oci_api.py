@@ -13,33 +13,31 @@ class OCIApi:
             "region": region
         }
 
-    def get_instances(self, compartment_ocid, tag_name):
-
+    def get_instances(self, compartment_ocid):
         print('get_instances')
         compute = oci.core.ComputeClient(self.config)
         response = compute.list_instances(compartment_ocid)
-        data = response.data
-        print(data)
-        instance_map = {}
-        result = {}
-        for item in data:
-            print('item display: ' + item.display_name)
-            if tag_name in item.display_name:
-                instance_map[item.display_name] = item.id
-
-        for key, value in instance_map.items():
-            print('key'+ key)
-            print('value: ' + value)
-            result[key] = self.get_public_ip(compartment_ocid, value)
-        print('result: ' + str(result))
-        return result
-
+        instance_info = {}
+        instance_info['linux'] = []
+        instance_info['windows'] = []
+        for i in response.data:
+            if 'type' in i.freeform_tags:
+                if i.freeform_tags['type'] == 'linux':
+                    instance = {}
+                    instance['name'] = i.display_name
+                    instance['ip'] = self.get_public_ip(compartment_ocid, i.id)
+                    instance_info['linux'].append(instance)
+                elif i.freeform_tags['type'] == 'windows':
+                    instance = {}
+                    instance['name'] = i.display_name
+                    instance['ip'] = self.get_public_ip(compartment_ocid, i.id)
+                    instance_info['windows'].append(instance)
+        print(instance_info)
     def get_public_ip(self, compartment_ocid, instance_ocid):
         print('get pub ip')
         vnic = self.get_instance_vnic(compartment_ocid, instance_ocid)
         print('pub ip: ' + vnic.public_ip)
         return vnic.public_ip
-
     def get_instance_vnic(self, compartment,instance_id):
         print('get instance vnic')
         compute = oci.core.ComputeClient(self.config)
@@ -54,3 +52,13 @@ class OCIApi:
                 print(vnic_attachment)
                 return vnic_attachment
         return None
+
+    def get_compartments(self):
+        result = oci.pagination.list_call_get_all_results(identity.list_compartments, config['tenancy'])
+        compartments = []
+        for c in result.data:
+            comp = {}
+            comp['name'] = c.description
+            comp['ocid'] = c.id
+            result_list.append(comp)
+        return compartments

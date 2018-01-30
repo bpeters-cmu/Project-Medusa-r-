@@ -332,90 +332,37 @@ class OCIAdmin(db.Model):
         db.session.add(self)
         db.session.commit()
 
-    def get_instances(self, compartment_name):
-        print('enter get instances')
-        print('compartment_name ' + compartment_name)
-        compartment = Compartment.query.filter_by(name=compartment_name).first()
-        print(compartment.compartment_ocid)
+    def get_instances(self, compartment_ocid):
 
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
-        result = oci.get_instances(compartment.compartment_ocid, 'medusa_ad')
+        result = oci.get_instances(compartment_ocid)
         print('result ' +str(result))
-        instances = []
-        for key, value in result.items():
-            instance = {}
-            instance['name'] = key
-            if not self.rdp_pword:
-                instance['token'] = None
-                instances.append(instance)
-                continue
-
-            rdp_password = decrypt(config.key, self.rdp_pword).decode('utf8')
-
-            json_data = {}
-            json_data['connection'] = {}
-            json_data['connection']['settings'] = {}
-            json_data['connection']['type'] = 'rdp'
-            json_data['connection']['settings']['hostname'] = value
-            json_data['connection']['settings']['username'] = self.rdp_username
-            json_data['connection']['settings']['password'] = str(rdp_password)
-            json_data['connection']['settings']['console-audio'] = True
-            token = json.dumps(json_data).encode('utf-8')
-            print(token)
-            s_token = str(base64.urlsafe_b64encode(token))
-            s_token = s_token[2:-1]
-            print(s_token)
-            instance['token'] = s_token
-            instances.append(instance)
-        return instances
-
-    def add_compartment(self, name, compartment_ocid):
-        compartment = Compartment(compartment_ocid, name, self.id)
-        compartment.insert()
-        self.compartments.append(compartment)
-    def get_console_instances(self, compartment_name):
-        print('enter get instances')
-        print('compartment_name ' + compartment_name)
-        compartment = Compartment.query.filter_by(name=compartment_name).first()
-        print(compartment.compartment_ocid)
-        oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
-        result = oci.get_instances(compartment.compartment_ocid, 'linux')
-        instances = []
-        for key, value in result.items():
-            instance = {}
-            instance['name'] = key
-            instance['ip'] = value
-            if os.path.exists('/medusa_keys/' + value):
-                instance['key'] = True
-            else:
-                instance['key'] = False
-            instances.append(instance)
-        return instances
-
-
-class Compartment(db.Model):
-    __tablename__ = 'Compartment'
-    id = db.Column('user_id',db.Integer , primary_key=True)
-    name = db.Column(db.String(25))
-    compartment_ocid = db.Column(db.String(128), unique=True , index=True)
-    admin_id = db.Column(db.Integer, db.ForeignKey('OCIAdmin.user_id'), nullable=False)
-
-    def __init__(self, compartment_ocid, name, admin_id):
-        self.compartment_ocid = compartment_ocid
-        self.admin_id = admin_id
-        self.name = name
-
-    def insert(self):
-        try:
-            db.session.add(self)
-            db.session.commit()
-            return True
-        except BaseException as e:
-            print('exception occurred, rolling back db')
-            print(str(e))
-            db.session.rollback()
-            return False
-
-    def serialize(self):
-        return {'name': self.name, 'compartment_ocid': self.compartment_ocid}
+        if result['windows']:
+            for instance in result['windows']:
+                if not self.rdp_pword:
+                    instance['token'] = None
+                    continue
+                rdp_password = decrypt(config.key, self.rdp_pword).decode('utf8')
+                json_data = {}
+                json_data['connection'] = {}
+                json_data['connection']['settings'] = {}
+                json_data['connection']['type'] = 'rdp'
+                json_data['connection']['settings']['hostname'] = instance['ip']
+                json_data['connection']['settings']['username'] = self.rdp_username
+                json_data['connection']['settings']['password'] = str(rdp_password)
+                json_data['connection']['settings']['console-audio'] = True
+                token = json.dumps(json_data).encode('utf-8')
+                print(token)
+                s_token = str(base64.urlsafe_b64encode(token))
+                s_token = s_token[2:-1]
+                print(s_token)
+                instance['token'] = s_token
+        if result['linux']:
+            for instance in result['linux']:
+                if os.path.exists('/medusa_keys/' + instance['ip']):
+                    instance['key'] = True
+                else:
+                    instance['key'] = False
+        return result
+            

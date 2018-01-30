@@ -29,9 +29,8 @@ from oci_endpoint import OCILogin, Admin, Instances, Compartments, Consoles
 api_f.add_resource(Admin, '/admin')
 api_f.add_resource(OCILogin, '/ocilogin')
 api_f.add_resource(Instances, '/instances/<c_ocid>')
-api_f.add_resource(Compartments, '/compartment')
-api_f.add_resource(Consoles, '/console/<c_ocid>', endpoint="consoles")
-api_f.add_resource(Consoles, '/console', endpoint = "console")
+api_f.add_resource(Compartments, '/compartments')
+
 
 if __name__ == '__main__':
     application.run(host='0.0.0.0', port='8000', debug=True)
