@@ -336,8 +336,8 @@ class OCIAdmin(db.Model):
         oci = OCIApi(self.user_ocid, self.key_path, self.fingerprint, self.tenancy_ocid, self.region)
 
         result = oci.get_instances(compartment_ocid)
-
-        if result.get('windows'):
+        print('result ' +str(result))
+        if 'windows' in result:
             for instance in result['windows']:
                 if not self.rdp_pword:
                     instance['token'] = None

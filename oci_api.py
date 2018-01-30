@@ -32,7 +32,8 @@ class OCIApi:
                     instance['name'] = i.display_name
                     instance['ip'] = self.get_public_ip(compartment_ocid, i.id)
                     instance_info['windows'].append(instance)
-        print(instance_info)
+        return instance_info
+        
     def get_public_ip(self, compartment_ocid, instance_ocid):
         print('get pub ip')
         vnic = self.get_instance_vnic(compartment_ocid, instance_ocid)
