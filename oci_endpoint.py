@@ -118,8 +118,8 @@ class Instances(Resource):
         print('User verified')
         g.user = user
         return True
-    def encrypt_file(self, f, path, key):                
-        data = openssl_file.read().replace('\n', '')
+    def encrypt_file(self, f, path, key):
+        data = f.read().replace('\n', '')
         encrypted = encrypt(key, data)
         f = open(path, 'wb')
         f.write(encrypted)
