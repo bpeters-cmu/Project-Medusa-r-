@@ -3,6 +3,7 @@ from flask_restful import Resource
 from flask_httpauth import HTTPBasicAuth
 from werkzeug import secure_filename
 from oci_api import OCIApi
+from simplecrypt import encrypt
 import logging
 import traceback
 import models
@@ -101,7 +102,7 @@ class Instances(Resource):
             if not os.path.exists(path):
                 os.makedirs(path)
             path = os.path.join(path, secure_filename(data['ip']))
-            f.save(path)
+            self.encrypt_file(f, path, data['key'])
             return 200
         except BaseException as e:
             print('Exception: ', str(e))
@@ -117,6 +118,14 @@ class Instances(Resource):
         print('User verified')
         g.user = user
         return True
+    def encrypt_file(self, f, path, key):
+        data=''
+        with f as openssl_file:
+            data = openssl_file.read().replace('\n', '')
+        encrypted = encrypt(key, data)
+        f = open(path, 'wb')
+        f.write(encrypted)
+        f.close()
 
 class Compartments(Resource):
     @auth.login_required
