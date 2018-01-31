@@ -28,7 +28,8 @@ from oci_endpoint import OCILogin, Admin, Instances, Compartments
 
 api_f.add_resource(Admin, '/admin')
 api_f.add_resource(OCILogin, '/ocilogin')
-api_f.add_resource(Instances, '/instances/<c_ocid>')
+api_f.add_resource(Instances, '/instances/<c_ocid>', endpoint = "instances")
+api_f.add_resource(Instances, '/instances', endpoint = "instance")
 api_f.add_resource(Compartments, '/compartments')
 
 
