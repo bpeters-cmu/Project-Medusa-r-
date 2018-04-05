@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+
+</head>
+
+<body>
+
+        <!-- Guacamole -->
+        <script type="text/javascript"
+            src="guacamole-common-js/all.min.js"></script>
+        <script type="text/javascript"
+            src="guacamole-common-js/all.js"></script>
+
+        <!-- Display -->
+        <div id="display"></div>
+
+        <!-- Init -->
+        <script type="text/javascript"> /* <![CDATA[ */
+
+
+        function connect(data){
+          // Get display div from document
+          var display = document.getElementById("display");
+
+
+          var token = data.token;
+
+          var width = data.width;
+          var height = data.height;
+          console.log(height);
+          var url = "ws://129.146.85.80:8291/?token="+token+"&width="+width+"&height="+height+"&dpi=96";
+          console.log(url);
+
+          var guac = new Guacamole.Client(
+              new Guacamole.WebSocketTunnel(url));
+
+          // Add client to display div
+          display.appendChild(guac.getDisplay().getElement());
+
+          // Error handler
+          guac.onerror = function(error) {
+              alert(error);
+          };
+          // Connect
+          guac.connect();
+
+         // Disconnect on close
+         window.onunload = function() {
+             guac.disconnect();
+         }
+     // Mouse
+         var mouse = new Guacamole.Mouse(guac.getDisplay().getElement());
+         mouse.onmousedown =
+         mouse.onmouseup   =
+         mouse.onmousemove = function(mouseState) {
+             guac.sendMouseState(mouseState);
+         };
+         // Keyboard
+         var keyboard = new Guacamole.Keyboard(document);
+         keyboard.onkeydown = function (keysym) {
+             guac.sendKeyEvent(1, keysym);
+         };
+         keyboard.onkeyup = function (keysym) {
+             guac.sendKeyEvent(0, keysym);
+         };
+       }
+       window.onload = function(){
+       function receiveMessage(event){
+               event.source.postMessage('OK',event.origin);
+               console.log(event);
+               var data = event.data;
+               console.log(data.token);
+               window.removeEventListener("message", receiveMessage);
+               connect(data);
+
+       }
+       window.addEventListener("message", receiveMessage, false);
+       }
+      </script>
+
+</body>
+</html>

@@ -1,0 +1,49 @@
+version: '2'
+services:
+  db:
+      image: mysql:5.7
+      environment:
+       - MYSQL_ROOT_PASSWORD=Medusa
+       - MYSQL_DATABASE=guacamole
+       - MYSQL_USER=guacamole
+       - MYSQL_PASSWORD=Medusa
+      volumes:
+       - db_data:/var/lib/mysql
+      restart: always
+  medusa:
+      image: medusa
+      command: bash -c 'sleep 15 && python db_init.py && gunicorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:8000 -w 2 -k gevent --worker-connections 50 wsgi'
+      ports:
+       - "8000:8000"
+      depends_on:
+       - "db"
+      volumes:
+       - file_volume:/medusa_keys
+       - keys:/home/opc/.oci
+      restart: always
+  nginx:
+      image: nginx
+      ports:
+       - "80:80"
+      restart: always
+      command: bash -c './usr/share/nginx/html/env.sh > /usr/share/nginx/html/env.js && nginx -g "daemon off;"'
+      environment:
+       - HOST="129.146.85.80"
+  ssh:
+      image: ssh
+      command: "npm start"
+      ports:
+       - "2222:2222"
+      volumes:
+       - file_volume:/SSH2-Medusa/medusa_keys
+      restart: always
+  node_guacd:
+     image: node_guacd
+     ports:
+       - "8291:8291"
+     restart: always
+volumes:
+  db_data:
+  file_volume:
+  keys:
+
