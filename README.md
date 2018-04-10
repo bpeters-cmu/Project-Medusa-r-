@@ -10,5 +10,6 @@ Clone this repo
     - frontend
   
  
+ Open up the following ports on the security list, and firewall: 80, 3000
  Run "docker-compose up -d" from the Project-Medusa-r- directory 
     
