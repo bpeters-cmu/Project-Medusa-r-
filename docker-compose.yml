@@ -12,7 +12,7 @@ services:
       restart: always
   medusa:
       image: medusa
-      command: bash -c 'sleep 15 && python db_init.py && gunicorn --certfile cert.pem --keyfile key.pem --bind 0.0.0.0:8000 -w 2 -k gevent --worker-connections 50 wsgi'
+      command: bash -c 'sleep 15 && python db_init.py && gunicorn --bind 0.0.0.0:8000 -w 2 -k gevent --worker-connections 50 wsgi'
       ports:
        - "8000:8000"
       depends_on:
@@ -42,8 +42,12 @@ services:
      ports:
        - "8291:8291"
      restart: always
+  frontend:
+    image: frontend
+    ports:
+      - "3000:3000"
+    restart: always
 volumes:
   db_data:
   file_volume:
   keys:
-
